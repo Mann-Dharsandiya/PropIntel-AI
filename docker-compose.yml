@@ -1,0 +1,67 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: propintel-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: propintel_ai
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: propintel-backend
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./backend/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/propintel_ai
+      CLIENT_ORIGIN: http://localhost:5173
+      ML_SERVICE_URL: http://ml-service:8000
+    volumes:
+      - ./backend/src:/app/src
+    depends_on:
+      - mongo
+      - ml-service
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: propintel-frontend
+    restart: unless-stopped
+    ports:
+      - '5173:5173'
+    env_file:
+      - ./frontend/.env
+    environment:
+      VITE_API_BASE_URL: http://localhost:5000/api/v1
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: propintel-ml-service
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    env_file:
+      - ./ml-service/.env
+    volumes:
+      - ./ml-service/app:/app/app
+
+volumes:
+  mongo-data:

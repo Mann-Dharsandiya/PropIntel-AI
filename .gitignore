@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+__pycache__/
+.venv/
+venv/
+
+# Build output
+dist/
+build/
+
+# Env files
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Python
+*.pyc
+*.pkl
