@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+ import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -9,6 +9,11 @@ interface EnvConfig {
   mongoUri: string;
   jwtSecret: string;
   jwtExpiresIn: string;
+  jwtAccessSecret: string;
+  jwtAccessExpiresIn: string;
+  jwtRefreshSecret: string;
+  jwtRefreshExpiresIn: string;
+  bcryptSaltRounds: number;
   clientOrigin: string;
   mlServiceUrl: string;
 }
@@ -28,6 +33,11 @@ export const env: EnvConfig = {
   mongoUri: required('MONGO_URI', 'mongodb://localhost:27017/propintel_ai'),
   jwtSecret: required('JWT_SECRET', 'dev_secret_change_me'),
   jwtExpiresIn: required('JWT_EXPIRES_IN', '7d'),
+  jwtAccessSecret: required('JWT_ACCESS_SECRET', 'dev_access_secret_change_me'),
+  jwtAccessExpiresIn: required('JWT_ACCESS_EXPIRES_IN', '15m'),
+  jwtRefreshSecret: required('JWT_REFRESH_SECRET', 'dev_refresh_secret_change_me'),
+  jwtRefreshExpiresIn: required('JWT_REFRESH_EXPIRES_IN', '30d'),
+  bcryptSaltRounds: Number(required('BCRYPT_SALT_ROUNDS', '12')),
   clientOrigin: required('CLIENT_ORIGIN', 'http://localhost:5173'),
   mlServiceUrl: required('ML_SERVICE_URL', 'http://localhost:8000'),
 };
