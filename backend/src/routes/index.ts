@@ -1,12 +1,13 @@
  import { Router } from 'express';
 import healthRoutes from './health.routes';
+import authRoutes from './auth.routes';
 
 const router = Router();
 
 // Health Check
 router.use('/health', healthRoutes);
 
-// Authentication routes will be added back in Phase 2
-// router.use('/auth', authRoutes);
+// Authentication
+router.use('/auth', authRoutes);
 
 export default router;
