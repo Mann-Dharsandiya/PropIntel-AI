@@ -3,21 +3,21 @@
     "target": "ES2022",
     "module": "commonjs",
     "lib": ["ES2022"],
-    "outDir": "./dist",
+
     "rootDir": "./src",
+    "outDir": "./dist",
 
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-
     "moduleResolution": "node",
 
-    "declaration": false,
-    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
 
     "baseUrl": "./src",
+
     "paths": {
       "@/*": ["*"]
     },
@@ -27,16 +27,22 @@
       "./src/types"
     ],
 
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitAny": true,
+    "types": [
+      "node",
+      "express"
+    ],
 
-    "ignoreDeprecations": "6.0"
+    "sourceMap": true,
+
+    "declaration": false,
+
+    "noImplicitAny": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
 
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
+    "src/**/*"
   ],
 
   "exclude": [
