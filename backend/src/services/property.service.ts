@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+ import { Types } from 'mongoose';
 
 import { PropertyModel } from '../models/Property.model';
 import {
@@ -26,38 +26,44 @@ export async function getProperties(
 ) {
   const filter: Record<string, unknown> = {};
 
+  // City Filter
   if (query.city) {
     filter.city = query.city;
   }
 
+  // State Filter
   if (query.state) {
     filter.state = query.state;
   }
 
+  // Property Type Filter
   if (query.propertyType) {
     filter.propertyType = query.propertyType;
   }
 
+  // Bedrooms Filter
   if (query.bedrooms) {
-    filter.bedrooms = query.bedrooms;
+    filter.bedrooms = Number(query.bedrooms);
   }
 
+  // Price Filter
   if (query.minPrice || query.maxPrice) {
     filter.price = {};
 
     if (query.minPrice) {
       (filter.price as Record<string, number>).$gte =
-        query.minPrice;
+        Number(query.minPrice);
     }
 
     if (query.maxPrice) {
       (filter.price as Record<string, number>).$lte =
-        query.maxPrice;
+        Number(query.maxPrice);
     }
   }
 
-  const page = query.page ?? 1;
-  const limit = query.limit ?? 10;
+  // Pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
 
   const skip = (page - 1) * limit;
 

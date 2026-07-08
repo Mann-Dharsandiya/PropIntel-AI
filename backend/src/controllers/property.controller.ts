@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+ import { Request, Response, NextFunction } from "express";
 
 import {
   createProperty,
@@ -6,7 +6,7 @@ import {
   getPropertyById,
   updateProperty,
   deleteProperty,
-} from '../services/property.service';
+} from "../services/property.service";
 
 export async function create(
   req: Request,
@@ -16,12 +16,12 @@ export async function create(
   try {
     const property = await createProperty(
       req.body,
-      req.user!.sub,
+      (req as any).user.sub,
     );
 
     return res.status(201).json({
       success: true,
-      message: 'Property created successfully',
+      message: "Property created successfully",
       data: property,
     });
   } catch (error) {
@@ -76,7 +76,7 @@ export async function update(
 
     return res.json({
       success: true,
-      message: 'Property updated successfully',
+      message: "Property updated successfully",
       data: property,
     });
   } catch (error) {
@@ -94,7 +94,7 @@ export async function remove(
 
     return res.json({
       success: true,
-      message: 'Property deleted successfully',
+      message: "Property deleted successfully",
     });
   } catch (error) {
     next(error);
