@@ -21,6 +21,10 @@ const PricePredictionPage = lazy(
   () => import("@/pages/PricePredictionPage")
 );
 
+const RecommendationPage = lazy(
+  () => import("@/pages/RecommendationPage")
+);
+
 const NotFoundPage = lazy(
   () => import("@/pages/NotFoundPage")
 );
@@ -29,11 +33,15 @@ export default function AppRoutes() {
   return (
     <Suspense fallback={<Loading label="Loading page" />}>
       <Routes>
+
         <Route element={<Layout />}>
 
           <Route path="/" element={<LandingPage />} />
 
-          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/login"
+            element={<LoginPage />}
+          />
 
           <Route
             path="/register"
@@ -55,10 +63,14 @@ export default function AppRoutes() {
             element={<PropertyDetailsPage />}
           />
 
-          {/* AI Prediction */}
           <Route
             path="/predict-price"
             element={<PricePredictionPage />}
+          />
+
+          <Route
+            path="/recommendation"
+            element={<RecommendationPage />}
           />
 
           <Route
@@ -67,6 +79,7 @@ export default function AppRoutes() {
           />
 
         </Route>
+
       </Routes>
     </Suspense>
   );

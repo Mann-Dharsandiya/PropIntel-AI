@@ -4,6 +4,7 @@ import healthRoutes from "./health.routes";
 import authRoutes from "./auth.routes";
 import propertyRoutes from "./property.routes";
 import mlRoutes from "./ml.routes";
+import recommendationRoutes from "./recommendation.routes";
 
 const router = Router();
 
@@ -23,8 +24,16 @@ router.use("/auth", authRoutes);
 router.use("/properties", propertyRoutes);
 
 /**
- * Machine Learning Routes
+ * AI Price Prediction Routes
  */
 router.use("/ml", mlRoutes);
+
+/**
+ * AI Recommendation Routes
+ */
+router.use(
+  "/recommendation",
+  recommendationRoutes
+);
 
 export default router;

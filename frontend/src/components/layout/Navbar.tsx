@@ -3,9 +3,9 @@ import { Link, NavLink } from "react-router-dom";
 
 const NAV_LINKS = [
   { label: "Platform", to: "/#platform" },
-  { label: "Intelligence", to: "/#intelligence" },
+  { label: "Properties", to: "/properties" },
   { label: "AI Prediction", to: "/predict-price" },
-  { label: "Pricing", to: "/#pricing" },
+  { label: "AI Recommendation", to: "/recommendation" },
 ];
 
 export default function Navbar() {
@@ -14,7 +14,9 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-blueprint-700/60 bg-blueprint-900/95 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+
         {/* Logo */}
+
         <Link
           to="/"
           className="flex items-center gap-2.5"
@@ -49,13 +51,15 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
+
         <div className="hidden items-center gap-8 md:flex">
+
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.label}
               to={link.to}
               className={({ isActive }) =>
-                `font-mono text-xs uppercase tracking-[0.2em] transition ${
+                `font-mono text-xs uppercase tracking-[0.15em] transition ${
                   isActive
                     ? "text-brass-300"
                     : "text-slate-300 hover:text-brass-300"
@@ -65,10 +69,13 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+
         </div>
 
         {/* Desktop Buttons */}
+
         <div className="hidden items-center gap-3 md:flex">
+
           <NavLink
             to="/login"
             className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300 transition hover:text-brass-300"
@@ -82,9 +89,11 @@ export default function Navbar() {
           >
             Get Started
           </NavLink>
+
         </div>
 
         {/* Mobile Button */}
+
         <button
           type="button"
           className="flex h-9 w-9 items-center justify-center text-paper md:hidden"
@@ -112,18 +121,22 @@ export default function Navbar() {
             )}
           </svg>
         </button>
+
       </nav>
 
       {/* Mobile Menu */}
+
       {open && (
         <div className="border-t border-blueprint-700/60 bg-blueprint-900 px-6 pb-6 md:hidden">
+
           <div className="flex flex-col gap-4 pt-4">
+
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.label}
                 to={link.to}
                 onClick={() => setOpen(false)}
-                className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300"
+                className="font-mono text-xs uppercase tracking-[0.15em] text-slate-300"
               >
                 {link.label}
               </NavLink>
@@ -144,9 +157,12 @@ export default function Navbar() {
             >
               Get Started
             </NavLink>
+
           </div>
+
         </div>
       )}
+
     </header>
   );
 }
