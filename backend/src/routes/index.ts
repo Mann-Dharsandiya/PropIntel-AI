@@ -5,6 +5,7 @@ import authRoutes from "./auth.routes";
 import propertyRoutes from "./property.routes";
 import mlRoutes from "./ml.routes";
 import recommendationRoutes from "./recommendation.routes";
+import localityRoutes from "./locality.routes";
 
 const router = Router();
 
@@ -24,16 +25,24 @@ router.use("/auth", authRoutes);
 router.use("/properties", propertyRoutes);
 
 /**
- * AI Price Prediction Routes
+ * AI Price Prediction
  */
 router.use("/ml", mlRoutes);
 
 /**
- * AI Recommendation Routes
+ * AI Recommendation
  */
 router.use(
   "/recommendation",
   recommendationRoutes
+);
+
+/**
+ * Locality Intelligence
+ */
+router.use(
+  "/localities",
+  localityRoutes
 );
 
 export default router;

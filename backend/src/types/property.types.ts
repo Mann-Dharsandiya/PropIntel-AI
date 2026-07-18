@@ -1,7 +1,8 @@
-import { PropertyType } from '../models/Property.model';
+ import { PropertyType } from "../models/Property.model";
 
 export interface CreatePropertyInput {
   title: string;
+
   description: string;
 
   price: number;
@@ -18,6 +19,8 @@ export interface CreatePropertyInput {
 
   city: string;
 
+  locality: string;
+
   state: string;
 
   country: string;
@@ -30,14 +33,24 @@ export interface UpdatePropertyInput
 
 export interface PropertyQuery {
   city?: string;
+
+  locality?: string;
+
   state?: string;
 
   propertyType?: PropertyType;
 
-  minPrice?: number;
-  maxPrice?: number;
-
   bedrooms?: number;
+
+  bathrooms?: number;
+
+  minArea?: number;
+
+  maxArea?: number;
+
+  minPrice?: number;
+
+  maxPrice?: number;
 
   page?: number;
 

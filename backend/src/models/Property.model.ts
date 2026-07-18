@@ -1,17 +1,19 @@
-import { Schema, model, Document, Types } from 'mongoose';
+ import { Schema, model, Document, Types } from "mongoose";
 
 export const PROPERTY_TYPES = [
-  'Apartment',
-  'House',
-  'Villa',
-  'Plot',
-  'Commercial',
+  "Apartment",
+  "House",
+  "Villa",
+  "Plot",
+  "Commercial",
 ] as const;
 
-export type PropertyType = (typeof PROPERTY_TYPES)[number];
+export type PropertyType =
+  (typeof PROPERTY_TYPES)[number];
 
 export interface IProperty extends Document {
   title: string;
+
   description: string;
 
   price: number;
@@ -28,6 +30,8 @@ export interface IProperty extends Document {
 
   city: string;
 
+  locality: string;
+
   state: string;
 
   country: string;
@@ -36,7 +40,7 @@ export interface IProperty extends Document {
 
   owner: Types.ObjectId;
 
-  status: 'available' | 'sold';
+  status: "available" | "sold";
 
   createdAt: Date;
 
@@ -94,6 +98,13 @@ const propertySchema = new Schema<IProperty>(
     city: {
       type: String,
       required: true,
+      index: true,
+    },
+
+    locality: {
+      type: String,
+      required: true,
+      index: true,
     },
 
     state: {
@@ -113,22 +124,24 @@ const propertySchema = new Schema<IProperty>(
 
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
 
     status: {
       type: String,
-      enum: ['available', 'sold'],
-      default: 'available',
+      enum: ["available", "sold"],
+      default: "available",
+      index: true,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export const PropertyModel = model<IProperty>(
-  'Property',
-  propertySchema,
-);
+export const PropertyModel =
+  model<IProperty>(
+    "Property",
+    propertySchema
+  );

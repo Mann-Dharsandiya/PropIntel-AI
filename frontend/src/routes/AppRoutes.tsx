@@ -5,9 +5,16 @@ import Layout from "@/components/layout/Layout";
 import { Loading } from "@/components/common/Loading";
 
 const LandingPage = lazy(() => import("@/pages/LandingPage"));
+
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
-const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
-const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+
+const RegisterPage = lazy(
+  () => import("@/pages/RegisterPage")
+);
+
+const DashboardPage = lazy(
+  () => import("@/pages/DashboardPage")
+);
 
 const PropertyListPage = lazy(
   () => import("@/pages/PropertyListPage")
@@ -25,18 +32,36 @@ const RecommendationPage = lazy(
   () => import("@/pages/RecommendationPage")
 );
 
+const LocalityPage = lazy(
+  () => import("@/pages/LocalityPage")
+);
+
+const CompareLocalitiesPage = lazy(
+  () =>
+    import(
+      "@/pages/CompareLocalitiesPage"
+    )
+);
+
 const NotFoundPage = lazy(
   () => import("@/pages/NotFoundPage")
 );
 
 export default function AppRoutes() {
   return (
-    <Suspense fallback={<Loading label="Loading page" />}>
+    <Suspense
+      fallback={
+        <Loading label="Loading page" />
+      }
+    >
       <Routes>
 
         <Route element={<Layout />}>
 
-          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/"
+            element={<LandingPage />}
+          />
 
           <Route
             path="/login"
@@ -60,17 +85,35 @@ export default function AppRoutes() {
 
           <Route
             path="/properties/:id"
-            element={<PropertyDetailsPage />}
+            element={
+              <PropertyDetailsPage />
+            }
           />
 
           <Route
             path="/predict-price"
-            element={<PricePredictionPage />}
+            element={
+              <PricePredictionPage />
+            }
           />
 
           <Route
             path="/recommendation"
-            element={<RecommendationPage />}
+            element={
+              <RecommendationPage />
+            }
+          />
+
+          <Route
+            path="/locality"
+            element={<LocalityPage />}
+          />
+
+          <Route
+            path="/compare-localities"
+            element={
+              <CompareLocalitiesPage />
+            }
           />
 
           <Route

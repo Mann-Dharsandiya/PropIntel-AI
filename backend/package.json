@@ -1,4 +1,4 @@
-{
+ {
   "name": "propintel-backend",
   "version": "1.0.0",
   "description": "PropIntel AI - Backend API (Node.js + Express + TypeScript)",
@@ -11,7 +11,10 @@
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:properties": "ts-node src/seeds/property.seed.ts",
+    "seed:localities": "ts-node src/seeds/seedLocalities.ts",
+    "seed:price-history": "ts-node src/seeds/priceHistory.seed.ts"
   },
   "keywords": [
     "propintel",
@@ -33,7 +36,8 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.5.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "recharts": "^3.9.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

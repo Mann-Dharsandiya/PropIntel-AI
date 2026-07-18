@@ -2,10 +2,10 @@
 import { Link, NavLink } from "react-router-dom";
 
 const NAV_LINKS = [
-  { label: "Platform", to: "/#platform" },
   { label: "Properties", to: "/properties" },
   { label: "AI Prediction", to: "/predict-price" },
   { label: "AI Recommendation", to: "/recommendation" },
+  { label: "Locality AI", to: "/locality" },
 ];
 
 export default function Navbar() {
@@ -14,8 +14,6 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-blueprint-700/60 bg-blueprint-900/95 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-
-        {/* Logo */}
 
         <Link
           to="/"
@@ -50,10 +48,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-
-        <div className="hidden items-center gap-8 md:flex">
-
+        <div className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.label}
@@ -69,13 +64,9 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-
         </div>
 
-        {/* Desktop Buttons */}
-
         <div className="hidden items-center gap-3 md:flex">
-
           <NavLink
             to="/login"
             className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300 transition hover:text-brass-300"
@@ -89,46 +80,19 @@ export default function Navbar() {
           >
             Get Started
           </NavLink>
-
         </div>
 
-        {/* Mobile Button */}
-
         <button
-          type="button"
-          className="flex h-9 w-9 items-center justify-center text-paper md:hidden"
-          aria-label="Toggle navigation"
+          className="md:hidden"
           onClick={() => setOpen(!open)}
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            {open ? (
-              <path
-                d="M6 6L18 18M18 6L6 18"
-                strokeLinecap="round"
-              />
-            ) : (
-              <path
-                d="M4 7H20M4 12H20M4 17H20"
-                strokeLinecap="round"
-              />
-            )}
-          </svg>
+          ☰
         </button>
 
       </nav>
 
-      {/* Mobile Menu */}
-
       {open && (
         <div className="border-t border-blueprint-700/60 bg-blueprint-900 px-6 pb-6 md:hidden">
-
           <div className="flex flex-col gap-4 pt-4">
 
             {NAV_LINKS.map((link) => (
@@ -142,24 +106,7 @@ export default function Navbar() {
               </NavLink>
             ))}
 
-            <NavLink
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300"
-            >
-              Sign In
-            </NavLink>
-
-            <NavLink
-              to="/register"
-              onClick={() => setOpen(false)}
-              className="w-fit rounded-sm border border-brass-500 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-brass-300"
-            >
-              Get Started
-            </NavLink>
-
           </div>
-
         </div>
       )}
 

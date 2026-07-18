@@ -2,111 +2,184 @@
 
 export interface RecommendationRequest {
   budget: number;
+
   city: string;
+
+  locality?: string;
+
   propertyType: string;
+
   bedrooms: number;
+
   bathrooms: number;
+
   minArea: number;
 }
 
 export async function getRecommendations(
   filters: RecommendationRequest
 ) {
-  // Fetch all available properties
-  const properties = await PropertyModel.find({
-    status: "available",
-  }).populate("owner", "name email phone");
+  const properties =
+    await PropertyModel.find({
+      status: "available",
+    }).populate(
+      "owner",
+      "name email phone"
+    );
 
-  const scoredProperties = properties.map((property) => {
-    let score = 0;
+  const scoredProperties =
+    properties.map((property) => {
 
-    // -------------------------
-    // Budget (30)
-    // -------------------------
-    if (property.price <= filters.budget) {
-      score += 30;
-    } else {
-      const difference = property.price - filters.budget;
-      const percentage = difference / filters.budget;
+      let score = 0;
 
-      if (percentage <= 0.10) {
-        score += 25;
-      } else if (percentage <= 0.20) {
-        score += 18;
-      } else if (percentage <= 0.30) {
+      // --------------------
+      // Budget (30)
+      // --------------------
+
+      if (
+        property.price <=
+        filters.budget
+      ) {
+        score += 30;
+      } else {
+
+        const diff =
+          property.price -
+          filters.budget;
+
+        const percent =
+          diff / filters.budget;
+
+        if (percent <= 0.10) {
+          score += 25;
+        } else if (
+          percent <= 0.20
+        ) {
+          score += 18;
+        } else if (
+          percent <= 0.30
+        ) {
+          score += 10;
+        }
+
+      }
+
+      // --------------------
+      // City (20)
+      // --------------------
+
+      if (
+        property.city
+          .toLowerCase()
+          .trim() ===
+        filters.city
+          .toLowerCase()
+          .trim()
+      ) {
+        score += 20;
+      }
+
+      // --------------------
+      // ⭐ Locality (20)
+      // --------------------
+
+      if (
+        filters.locality &&
+        property.locality
+          .toLowerCase()
+          .trim() ===
+        filters.locality
+          .toLowerCase()
+          .trim()
+      ) {
+        score += 20;
+      }
+
+      // --------------------
+      // Property Type (10)
+      // --------------------
+
+      if (
+        property.propertyType
+          .toLowerCase() ===
+        filters.propertyType
+          .toLowerCase()
+      ) {
         score += 10;
       }
-    }
 
-    // -------------------------
-    // City (20)
-    // -------------------------
-    if (
-      property.city.toLowerCase() ===
-      filters.city.toLowerCase()
-    ) {
-      score += 20;
-    }
+      // --------------------
+      // Bedrooms (10)
+      // --------------------
 
-    // -------------------------
-    // Property Type (15)
-    // -------------------------
-    if (
-      property.propertyType.toLowerCase() ===
-      filters.propertyType.toLowerCase()
-    ) {
-      score += 15;
-    }
+      const bedroomDiff =
+        Math.abs(
+          property.bedrooms -
+            filters.bedrooms
+        );
 
-    // -------------------------
-    // Bedrooms (15)
-    // -------------------------
-    const bedroomDifference = Math.abs(
-      property.bedrooms - filters.bedrooms
-    );
+      if (bedroomDiff === 0) {
+        score += 10;
+      } else if (
+        bedroomDiff === 1
+      ) {
+        score += 6;
+      }
 
-    if (bedroomDifference === 0) {
-      score += 15;
-    } else if (bedroomDifference === 1) {
-      score += 10;
-    } else if (bedroomDifference === 2) {
-      score += 5;
-    }
+      // --------------------
+      // Bathrooms (5)
+      // --------------------
 
-    // -------------------------
-    // Bathrooms (10)
-    // -------------------------
-    const bathroomDifference = Math.abs(
-      property.bathrooms - filters.bathrooms
-    );
+      const bathroomDiff =
+        Math.abs(
+          property.bathrooms -
+            filters.bathrooms
+        );
 
-    if (bathroomDifference === 0) {
-      score += 10;
-    } else if (bathroomDifference === 1) {
-      score += 5;
-    }
+      if (bathroomDiff === 0) {
+        score += 5;
+      } else if (
+        bathroomDiff === 1
+      ) {
+        score += 3;
+      }
 
-    // -------------------------
-    // Area (10)
-    // -------------------------
-    if (property.area >= filters.minArea) {
-      score += 10;
-    } else {
-      const ratio =
-        property.area / filters.minArea;
+      // --------------------
+      // Area (5)
+      // --------------------
 
-      score += Math.round(ratio * 10);
-    }
+      if (
+        property.area >=
+        filters.minArea
+      ) {
+        score += 5;
+      } else {
 
-    return {
-      ...property.toObject(),
-      matchScore: score,
-    };
-  });
+        const ratio =
+          property.area /
+          filters.minArea;
+
+        score += Math.round(
+          ratio * 5
+        );
+
+      }
+
+      return {
+        ...property.toObject(),
+        matchScore: score,
+      };
+
+    });
 
   scoredProperties.sort(
-    (a, b) => b.matchScore - a.matchScore
+    (a, b) =>
+      b.matchScore -
+      a.matchScore
   );
 
-  return scoredProperties.slice(0, 5);
+  return scoredProperties.slice(
+    0,
+    5
+  );
 }
