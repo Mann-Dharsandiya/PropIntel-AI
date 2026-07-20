@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { label: "AI Prediction", to: "/predict-price" },
   { label: "AI Recommendation", to: "/recommendation" },
   { label: "Locality AI", to: "/locality" },
+  { label: "Compare AI", to: "/compare-localities" },
 ];
 
 export default function Navbar() {

@@ -1,166 +1,313 @@
  import {
-  CheckCircle,
-  XCircle,
-  Sparkles,
+  Brain,
+  BadgeCheck,
+  TrendingUp,
+  Building2,
+  Train,
+  School,
+  Hospital,
+  ShoppingBag,
+  Landmark,
 } from "lucide-react";
 
-import type {
-  InvestmentExplanation as InvestmentExplanationData,
-} from "@/api/explanation";
+interface LocalityData {
+  locality: string;
+  city: string;
+  averagePrice: number;
+  investmentScore: number;
+  priceGrowth: number;
+  metroConnectivity: number;
+  schoolsNearby: number;
+  hospitalsNearby: number;
+  shoppingScore: number;
+  rentalDemand: string;
+  futureGrowth: string;
+}
 
-interface Props {
-  data: InvestmentExplanationData | null;
+interface InvestmentExplanationProps {
+  first: LocalityData;
+  second: LocalityData;
 }
 
 export default function InvestmentExplanation({
-  data,
-}: Props) {
-  if (!data) {
-    return null;
-  }
+  first,
+  second,
+}: InvestmentExplanationProps) {
+  const firstScore =
+  first?.investmentScore ??
+  first?.priceGrowth ??
+  first?.averagePrice ??
+  0;
 
-  const explanation = data;
+const secondScore =
+  second?.investmentScore ??
+  second?.priceGrowth ??
+  second?.averagePrice ??
+  0;
 
-  const recommendationColor = (() => {
-    switch (
-      explanation.recommendation.toLowerCase()
-    ) {
-      case "strong buy":
-        return "bg-green-600";
-
-      case "buy":
-        return "bg-blue-600";
-
-      case "hold":
-        return "bg-yellow-500";
-
-      case "neutral":
-        return "bg-orange-500";
-
-      case "avoid":
-        return "bg-red-600";
-
-      default:
-        return "bg-gray-600";
-    }
-  })();
+const winner =
+  firstScore >= secondScore
+    ? first
+    : second;
 
   return (
-    <div className="mt-10 rounded-2xl bg-white p-8 shadow-lg">
+    <section className="rounded-[32px] bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 p-8 text-white shadow-2xl">
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex items-center gap-3">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
 
-          <Sparkles
-            size={30}
-            className="text-indigo-600"
-          />
+          <Brain className="h-8 w-8" />
 
-          <div>
+        </div>
 
-            <h2 className="text-2xl font-bold">
-              🤖 AI Investment Analysis
-            </h2>
+        <div>
 
-            <p className="text-gray-500">
-              Personalized recommendation based on
-              locality intelligence
+          <h2 className="text-3xl font-black">
+
+            AI Investment Analysis
+
+          </h2>
+
+          <p className="text-indigo-200">
+
+            Why this locality is recommended.
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-2">
+
+        <div>
+
+          <div className="space-y-5">
+
+            <div className="flex gap-4">
+
+              <BadgeCheck className="mt-1 h-6 w-6 text-green-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Better Investment Score
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  {winner.locality} currently has the highest
+                  investment score among the selected localities.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <TrendingUp className="mt-1 h-6 w-6 text-green-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Better Appreciation
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Historical market trends indicate
+                  stronger appreciation potential.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <Train className="mt-1 h-6 w-6 text-cyan-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Connectivity
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Metro and transport accessibility
+                  positively affect future property demand.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <School className="mt-1 h-6 w-6 text-yellow-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Education Infrastructure
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Better educational facilities generally
+                  increase long-term property value.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <Hospital className="mt-1 h-6 w-6 text-red-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Healthcare Access
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Hospital availability improves
+                  residential demand and resale value.
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div>
+
+          <div className="space-y-5">
+
+            <div className="flex gap-4">
+
+              <ShoppingBag className="mt-1 h-6 w-6 text-pink-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Lifestyle Score
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Better shopping and entertainment
+                  improve the area's attractiveness.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <Building2 className="mt-1 h-6 w-6 text-green-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Rental Potential
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Strong rental demand increases
+                  recurring investment income.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <Landmark className="mt-1 h-6 w-6 text-amber-400" />
+
+              <div>
+
+                <h3 className="font-bold">
+
+                  Future Development
+
+                </h3>
+
+                <p className="mt-1 text-indigo-200">
+
+                  Upcoming infrastructure projects
+                  can significantly increase prices.
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="mt-8 rounded-3xl bg-white/10 p-6">
+
+            <h3 className="text-2xl font-bold">
+
+              Final AI Verdict
+
+            </h3>
+
+            <p className="mt-4 leading-8 text-indigo-100">
+
+              Based on all analysed parameters including
+              infrastructure, investment score, market
+              appreciation, public transport, schools,
+              hospitals, shopping, rental demand and
+              future growth,
+
+              <strong> {winner.locality}</strong>
+
+              is currently the stronger investment option
+              among the selected localities.
+
             </p>
 
           </div>
 
         </div>
 
-        <span
-          className={`rounded-full px-5 py-2 text-sm font-bold text-white ${recommendationColor}`}
-        >
-          {explanation.recommendation}
-        </span>
-
       </div>
 
-      <div className="rounded-xl bg-indigo-50 p-5">
-
-        <h3 className="mb-3 text-xl font-bold">
-          {explanation.title}
-        </h3>
-
-        <p className="leading-7 text-gray-700">
-          {explanation.summary}
-        </p>
-
-      </div>
-
-      <div className="mt-8 grid gap-8 lg:grid-cols-2">
-
-        <div>
-
-          <h3 className="mb-4 text-xl font-bold text-green-700">
-            ✅ Strengths
-          </h3>
-
-          <div className="space-y-3">
-
-            {explanation.pros.map(
-              (pro, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 rounded-lg bg-green-50 p-4"
-                >
-                  <CheckCircle
-                    size={20}
-                    className="mt-1 text-green-600"
-                  />
-
-                  <span>{pro}</span>
-
-                </div>
-              )
-            )}
-
-          </div>
-
-        </div>
-
-        <div>
-
-          <h3 className="mb-4 text-xl font-bold text-red-700">
-            ❌ Weaknesses
-          </h3>
-
-          {explanation.cons.length ===
-          0 ? (
-            <div className="rounded-lg bg-green-50 p-4 text-green-700">
-              No major concerns found.
-            </div>
-          ) : (
-            <div className="space-y-3">
-
-              {explanation.cons.map(
-                (con, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3 rounded-lg bg-red-50 p-4"
-                  >
-                    <XCircle
-                      size={20}
-                      className="mt-1 text-red-600"
-                    />
-
-                    <span>{con}</span>
-
-                  </div>
-                )
-              )}
-
-            </div>
-          )}
-
-        </div>
-
-      </div>
-
-    </div>
+    </section>
   );
 }

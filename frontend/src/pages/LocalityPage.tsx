@@ -26,7 +26,7 @@ import LocalityCard from "@/components/locality/LocalityCard";
 import LocalityLoading from "@/components/locality/LocalityLoading";
 import LocalityPropertyGrid from "@/components/locality/LocalityPropertyGrid";
 import PriceTrendChart from "@/components/locality/PriceTrendChart";
-import InvestmentExplanationCard from "@/components/locality/InvestmentExplanation";
+import LocalityInvestmentExplanation from "@/components/locality/LocalityInvestmentExplanation";
 import PropertyFiltersComponent from "@/components/locality/PropertyFilters";
 
 export default function LocalityPage() {
@@ -246,11 +246,10 @@ export default function LocalityPage() {
         )}
 
         {!loading && explanation && (
-          <InvestmentExplanationCard
-            data={explanation}
-          />
-        )}
-
+  <LocalityInvestmentExplanation
+    data={explanation}
+  />
+)}
         {!loading && data && (
           <PropertyFiltersComponent
             propertyType={propertyType}
