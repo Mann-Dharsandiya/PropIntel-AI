@@ -1,61 +1,123 @@
-import { body } from 'express-validator';
-import { USER_ROLES } from '../models/User.model';
+ import { body } from "express-validator";
+import { USER_ROLES } from "../models/User.model";
 
-const REGISTER_ROLES = USER_ROLES.filter(role => role !== 'admin');
+const REGISTER_ROLES = USER_ROLES.filter(
+  (role) => role !== "admin",
+);
 
+/**
+ * Register Validator
+ */
 export const registerValidator = [
-  body('name')
+  body("name")
     .trim()
     .notEmpty()
-    .withMessage('Name is required')
+    .withMessage("Name is required")
     .isLength({ min: 2, max: 100 })
-    .withMessage('Name must be between 2 and 100 characters'),
+    .withMessage(
+      "Name must be between 2 and 100 characters",
+    ),
 
-  body('email')
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Please enter a valid email')
+    .withMessage("Please enter a valid email")
     .normalizeEmail(),
 
-  body('phone')
+  body("phone")
     .trim()
     .notEmpty()
-    .withMessage('Phone number is required')
+    .withMessage("Phone number is required")
     .matches(/^\+?[0-9]{7,15}$/)
-    .withMessage('Invalid phone number'),
+    .withMessage("Invalid phone number"),
 
-  body('password')
+  body("password")
     .notEmpty()
-    .withMessage('Password is required')
+    .withMessage("Password is required")
     .isLength({ min: 8 })
-    .withMessage('Password must contain at least 8 characters')
+    .withMessage(
+      "Password must contain at least 8 characters",
+    )
     .matches(/[A-Z]/)
-    .withMessage('Password must contain one uppercase letter')
+    .withMessage(
+      "Password must contain one uppercase letter",
+    )
     .matches(/[a-z]/)
-    .withMessage('Password must contain one lowercase letter')
+    .withMessage(
+      "Password must contain one lowercase letter",
+    )
     .matches(/[0-9]/)
-    .withMessage('Password must contain one number')
+    .withMessage(
+      "Password must contain one number",
+    )
     .matches(/[!@#$%^&*(),.?":{}|<>]/)
-    .withMessage('Password must contain one special character'),
+    .withMessage(
+      "Password must contain one special character",
+    ),
 
-  body('role')
+  body("role")
     .optional()
     .isIn(REGISTER_ROLES)
-    .withMessage('Invalid role'),
+    .withMessage("Invalid role"),
 ];
 
+/**
+ * Login Validator
+ */
 export const loginValidator = [
-  body('email')
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Invalid email')
+    .withMessage("Invalid email")
     .normalizeEmail(),
 
-  body('password')
+  body("password")
     .notEmpty()
-    .withMessage('Password is required'),
+    .withMessage("Password is required"),
+];
+
+/**
+ * Forgot Password Validator
+ */
+export const forgotPasswordValidator = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please enter a valid email")
+    .normalizeEmail(),
+];
+
+/**
+ * Reset Password Validator
+ */
+export const resetPasswordValidator = [
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8 })
+    .withMessage(
+      "Password must contain at least 8 characters",
+    )
+    .matches(/[A-Z]/)
+    .withMessage(
+      "Password must contain one uppercase letter",
+    )
+    .matches(/[a-z]/)
+    .withMessage(
+      "Password must contain one lowercase letter",
+    )
+    .matches(/[0-9]/)
+    .withMessage(
+      "Password must contain one number",
+    )
+    .matches(/[!@#$%^&*(),.?":{}|<>]/)
+    .withMessage(
+      "Password must contain one special character",
+    ),
 ];

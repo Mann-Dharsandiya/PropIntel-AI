@@ -1,10 +1,12 @@
-import { IUser, UserRole } from '../models/User.model';
+ import { IUser, UserRole } from "../models/User.model";
 
 /**
  * JWT Payload
  */
 export interface JwtPayload {
+  _id: string;
   sub: string;
+  email: string;
   role: UserRole;
 }
 

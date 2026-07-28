@@ -1,20 +1,20 @@
- {
+{
   "name": "propintel-backend",
   "version": "1.0.0",
   "description": "PropIntel AI - Backend API (Node.js + Express + TypeScript)",
   "main": "dist/server.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node --files src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "seed:properties": "ts-node src/seeds/property.seed.ts",
-    "seed:localities": "ts-node src/seeds/seedLocalities.ts",
-    "seed:price-history": "ts-node src/seeds/priceHistory.seed.ts"
+    "seed:properties": "ts-node --files src/seeds/property.seed.ts",
+    "seed:localities": "ts-node --files src/seeds/seedLocalities.ts",
+    "seed:price-history": "ts-node --files src/seeds/priceHistory.seed.ts"
   },
   "keywords": [
     "propintel",
@@ -37,6 +37,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.5.1",
     "morgan": "^1.10.0",
+    "nodemailer": "^9.0.3",
     "recharts": "^3.9.2"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.14.11",
+    "@types/nodemailer": "^8.0.1",
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.16.1",
     "eslint": "^8.57.0",

@@ -43,3 +43,30 @@ export const register = async (data: RegisterRequest) => {
   const response = await apiClient.post<AuthResponse>("/auth/register", data);
   return response.data;
 };
+export interface VerifyEmailResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ResendVerificationRequest {
+  email: string;
+}
+
+export const verifyEmail = async (token: string) => {
+  const response = await apiClient.get<VerifyEmailResponse>(
+    `/auth/verify-email/${token}`
+  );
+
+  return response.data;
+};
+
+export const resendVerification = async (
+  data: ResendVerificationRequest
+) => {
+  const response = await apiClient.post<VerifyEmailResponse>(
+    "/auth/resend-verification",
+    data
+  );
+
+  return response.data;
+};

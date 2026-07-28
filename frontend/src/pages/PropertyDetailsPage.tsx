@@ -1,6 +1,8 @@
  import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProperty, Property } from "@/api/property";
+import { addRecentlyViewed } from "@/api/recentlyViewed";
+import FavoriteButton from "@/components/property/FavoriteButton";
 
 export default function PropertyDetailsPage() {
   const { id } = useParams();
@@ -35,6 +37,18 @@ export default function PropertyDetailsPage() {
     loadProperty();
   }, [id]);
 
+  // Automatically save to Recently Viewed
+  useEffect(() => {
+    if (!property?._id) return;
+
+    addRecentlyViewed(property._id).catch((err) => {
+      console.error(
+        "Failed to save recently viewed:",
+        err
+      );
+    });
+  }, [property?._id]);
+
   if (loading) {
     return (
       <div className="py-20 text-center text-xl">
@@ -46,7 +60,6 @@ export default function PropertyDetailsPage() {
   if (error) {
     return (
       <div className="py-20 text-center">
-
         <div className="mb-5 text-7xl">
           ⚠️
         </div>
@@ -65,7 +78,6 @@ export default function PropertyDetailsPage() {
         >
           Go Back
         </button>
-
       </div>
     );
   }
@@ -93,7 +105,10 @@ export default function PropertyDetailsPage() {
       <div className="overflow-hidden rounded-3xl shadow-xl">
 
         <img
-          src={property.images[0]}
+          src={
+            property.images?.[0] ||
+            "https://placehold.co/1200x700?text=Property"
+          }
           alt={property.title}
           className="h-[500px] w-full object-cover"
         />
@@ -112,23 +127,34 @@ export default function PropertyDetailsPage() {
 
       </div>
 
-      <h1 className="mt-5 text-4xl font-bold">
-        {property.title}
-      </h1>
+      {/* Title + Favorite */}
 
-      <p className="mt-4 text-4xl font-bold text-blue-600">
-        ₹ {property.price.toLocaleString()}
-      </p>
+      <div className="mt-5 flex items-start justify-between gap-4">
 
-      <p className="mt-3 text-lg text-gray-600">
-        📍 {property.address},
-        {" "}
-        {property.city},
-        {" "}
-        {property.state},
-        {" "}
-        {property.country}
-      </p>
+        <div>
+
+          <h1 className="text-4xl font-bold">
+            {property.title}
+          </h1>
+
+          <p className="mt-4 text-4xl font-bold text-blue-600">
+            ₹ {property.price.toLocaleString()}
+          </p>
+
+          <p className="mt-3 text-lg text-gray-600">
+            📍 {property.address},{" "}
+            {property.city},{" "}
+            {property.state},{" "}
+            {property.country}
+          </p>
+
+        </div>
+
+        <FavoriteButton
+          propertyId={property._id}
+        />
+
+      </div>
 
       {/* Features */}
 
@@ -210,20 +236,17 @@ export default function PropertyDetailsPage() {
           <div className="space-y-3">
 
             <p>
-              👤{" "}
-              <strong>Name:</strong>{" "}
+              👤 <strong>Name:</strong>{" "}
               {property.owner.name}
             </p>
 
             <p>
-              📧{" "}
-              <strong>Email:</strong>{" "}
+              📧 <strong>Email:</strong>{" "}
               {property.owner.email}
             </p>
 
             <p>
-              📞{" "}
-              <strong>Phone:</strong>{" "}
+              📞 <strong>Phone:</strong>{" "}
               {property.owner.phone}
             </p>
 

@@ -1,21 +1,31 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
+
 import {
   registerUser,
   loginUser,
   getUserById,
-} from '../services/auth.service';
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  resendVerificationEmail,
+} from "../services/auth.service";
+
 import {
   verifyRefreshToken,
   generateTokens,
-} from '../services/token.service';
+} from "../services/token.service";
+
 import {
   setAuthCookies,
   clearAuthCookies,
-} from '../utils/cookies';
-import { ApiError } from '../utils/ApiError';
+} from "../utils/cookies";
+
+import { ApiError } from "../utils/ApiError";
 
 /**
+ * ---------------------------------------------------------
  * Register
+ * ---------------------------------------------------------
  */
 export async function register(
   req: Request,
@@ -25,11 +35,16 @@ export async function register(
   try {
     const { user, tokens } = await registerUser(req.body);
 
-    setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
+    setAuthCookies(
+      res,
+      tokens.accessToken,
+      tokens.refreshToken,
+    );
 
     res.status(201).json({
       success: true,
-      message: 'Registration successful',
+      message:
+        "Registration successful. Please verify your email.",
       data: {
         user,
         accessToken: tokens.accessToken,
@@ -41,7 +56,9 @@ export async function register(
 }
 
 /**
+ * ---------------------------------------------------------
  * Login
+ * ---------------------------------------------------------
  */
 export async function login(
   req: Request,
@@ -51,11 +68,15 @@ export async function login(
   try {
     const { user, tokens } = await loginUser(req.body);
 
-    setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
+    setAuthCookies(
+      res,
+      tokens.accessToken,
+      tokens.refreshToken,
+    );
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       data: {
         user,
         accessToken: tokens.accessToken,
@@ -75,7 +96,7 @@ export async function me(
   next: NextFunction,
 ) {
   try {
-    const payload = (req as any).user;
+    const payload = req.user;
 
     if (!payload) {
       throw ApiError.unauthorized();
@@ -102,19 +123,24 @@ export async function refreshToken(
 ) {
   try {
     const refreshToken =
-      req.cookies?.refreshToken ||
+      req.cookies?.refreshToken ??
       req.body?.refreshToken;
 
     if (!refreshToken) {
-      throw ApiError.unauthorized('Refresh token missing');
+      throw ApiError.unauthorized(
+        "Refresh token missing",
+      );
     }
 
-    const payload = verifyRefreshToken(refreshToken);
+    const payload =
+      verifyRefreshToken(refreshToken);
 
     const user = await getUserById(payload.sub);
 
     const tokens = generateTokens({
+      _id: user.id,
       sub: user.id,
+      email: user.email,
       role: user.role,
     });
 
@@ -146,6 +172,94 @@ export function logout(
 
   res.json({
     success: true,
-    message: 'Logged out successfully',
+    message: "Logged out successfully",
   });
+}
+/**
+ * Forgot Password
+ */
+export async function forgotPasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { email } = req.body;
+
+    const result = await forgotPassword(email);
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Reset Password
+ */
+export async function resetPasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const result = await resetPassword(
+      token,
+      password,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+/**
+ * ---------------------------------------------------------
+ * Verify Email
+ * ---------------------------------------------------------
+ */
+export async function verifyEmailController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { token } = req.params;
+
+    const result = await verifyEmail(token);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * ---------------------------------------------------------
+ * Resend Verification Email
+ * ---------------------------------------------------------
+ */
+export async function resendVerificationController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { email } = req.body;
+
+    const result = await resendVerificationEmail(email);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    next(error);
+  }
 }

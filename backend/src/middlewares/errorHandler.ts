@@ -3,10 +3,6 @@ import { ApiError } from '../utils/ApiError';
 import { logger } from '../utils/logger';
 import { isProduction } from '../config/env';
 
-/**
- * Centralized error-handling middleware.
- * Must be registered LAST, after all routes.
- */
 export function errorHandler(
   err: unknown,
   req: Request,

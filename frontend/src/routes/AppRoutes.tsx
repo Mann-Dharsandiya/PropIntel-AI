@@ -5,78 +5,77 @@ import Layout from "@/components/layout/Layout";
 import { Loading } from "@/components/common/Loading";
 
 const LandingPage = lazy(() => import("@/pages/LandingPage"));
-
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
-const RegisterPage = lazy(
-  () => import("@/pages/RegisterPage")
+const ForgotPasswordPage = lazy(
+  () => import("../pages/ForgotPasswordPage")
 );
 
-const DashboardPage = lazy(
-  () => import("@/pages/DashboardPage")
+const ResetPasswordPage = lazy(
+  () => import("../pages/ResetPasswordPage")
 );
 
-const PropertyListPage = lazy(
-  () => import("@/pages/PropertyListPage")
+const VerifyEmailPage = lazy(
+  () => import("@/pages/VerifyEmailPage")
 );
 
-const PropertyDetailsPage = lazy(
-  () => import("@/pages/PropertyDetailsPage")
+const ResendVerificationPage = lazy(
+  () => import("@/pages/ResendVerificationPage")
 );
 
-const PricePredictionPage = lazy(
-  () => import("@/pages/PricePredictionPage")
-);
-
-const RecommendationPage = lazy(
-  () => import("@/pages/RecommendationPage")
-);
-
-const LocalityPage = lazy(
-  () => import("@/pages/LocalityPage")
-);
-
-const CompareLocalitiesPage = lazy(
-  () =>
-    import(
-      "@/pages/CompareLocalitiesPage"
-    )
-);
-
-const NotFoundPage = lazy(
-  () => import("@/pages/NotFoundPage")
-);
+const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const FavoritesPage = lazy(() => import("@/pages/FavoritesPage"));
+const PropertyListPage = lazy(() => import("@/pages/PropertyListPage"));
+const PropertyDetailsPage = lazy(() => import("@/pages/PropertyDetailsPage"));
+const PricePredictionPage = lazy(() => import("@/pages/PricePredictionPage"));
+const RecommendationPage = lazy(() => import("@/pages/RecommendationPage"));
+const LocalityPage = lazy(() => import("@/pages/LocalityPage"));
+const CompareLocalitiesPage = lazy(() => import("@/pages/CompareLocalitiesPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 export default function AppRoutes() {
   return (
-    <Suspense
-      fallback={
-        <Loading label="Loading page" />
-      }
-    >
+    <Suspense fallback={<Loading label="Loading page..." />}>
       <Routes>
-
         <Route element={<Layout />}>
 
+          <Route path="/" element={<LandingPage />} />
+
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/register" element={<RegisterPage />} />
+
           <Route
-            path="/"
-            element={<LandingPage />}
+            path="/forgot-password"
+            element={<ForgotPasswordPage />}
           />
 
           <Route
-            path="/login"
-            element={<LoginPage />}
+            path="/reset-password/:token"
+            element={<ResetPasswordPage />}
+          />
+
+          {/* Email Verification */}
+
+          <Route
+            path="/verify-email/:token"
+            element={<VerifyEmailPage />}
           />
 
           <Route
-            path="/register"
-            element={<RegisterPage />}
+            path="/resend-verification"
+            element={<ResendVerificationPage />}
           />
 
-          <Route
-            path="/dashboard"
-            element={<DashboardPage />}
-          />
+          {/* Protected */}
+
+          <Route path="/dashboard" element={<DashboardPage />} />
+
+          <Route path="/profile" element={<ProfilePage />} />
+
+          <Route path="/favorites" element={<FavoritesPage />} />
 
           <Route
             path="/properties"
@@ -85,23 +84,17 @@ export default function AppRoutes() {
 
           <Route
             path="/properties/:id"
-            element={
-              <PropertyDetailsPage />
-            }
+            element={<PropertyDetailsPage />}
           />
 
           <Route
             path="/predict-price"
-            element={
-              <PricePredictionPage />
-            }
+            element={<PricePredictionPage />}
           />
 
           <Route
             path="/recommendation"
-            element={
-              <RecommendationPage />
-            }
+            element={<RecommendationPage />}
           />
 
           <Route
@@ -111,9 +104,7 @@ export default function AppRoutes() {
 
           <Route
             path="/compare-localities"
-            element={
-              <CompareLocalitiesPage />
-            }
+            element={<CompareLocalitiesPage />}
           />
 
           <Route
@@ -122,7 +113,6 @@ export default function AppRoutes() {
           />
 
         </Route>
-
       </Routes>
     </Suspense>
   );

@@ -3,46 +3,58 @@
 import healthRoutes from "./health.routes";
 import authRoutes from "./auth.routes";
 import propertyRoutes from "./property.routes";
-import mlRoutes from "./ml.routes";
-import recommendationRoutes from "./recommendation.routes";
 import localityRoutes from "./locality.routes";
+import recommendationRoutes from "./recommendation.routes";
+import mlRoutes from "./ml.routes";
+import userRoutes from "./user.routes";
+import favoriteRoutes from "./favorite.routes";
+import dashboardRoutes from "./dashboard.routes";
 
 const router = Router();
 
 /**
- * Health Routes
+ * Health
  */
 router.use("/health", healthRoutes);
 
 /**
- * Authentication Routes
+ * Authentication
  */
 router.use("/auth", authRoutes);
 
 /**
- * Property Routes
+ * Users
+ */
+router.use("/users", userRoutes);
+
+/**
+ * Dashboard
+ */
+router.use("/dashboard", dashboardRoutes);
+
+/**
+ * Properties
  */
 router.use("/properties", propertyRoutes);
 
 /**
- * AI Price Prediction
+ * Favorites
+ */
+router.use("/favorites", favoriteRoutes);
+
+/**
+ * ML
  */
 router.use("/ml", mlRoutes);
 
 /**
- * AI Recommendation
+ * Recommendation
  */
-router.use(
-  "/recommendation",
-  recommendationRoutes
-);
+router.use("/recommendation", recommendationRoutes);
 
 /**
- * Locality Intelligence
+ * Locality
  */
-router.use(
-  "/localities",
-  localityRoutes
-);
+router.use("/localities", localityRoutes);
 
 export default router;
