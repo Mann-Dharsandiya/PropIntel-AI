@@ -10,6 +10,8 @@ import userRoutes from "./user.routes";
 import favoriteRoutes from "./favorite.routes";
 import dashboardRoutes from "./dashboard.routes";
 
+import advisorRoutes from "../ai/advisor.routes";
+
 const router = Router();
 
 /**
@@ -53,8 +55,13 @@ router.use("/ml", mlRoutes);
 router.use("/recommendation", recommendationRoutes);
 
 /**
- * Locality
+ * Localities
  */
 router.use("/localities", localityRoutes);
+
+/**
+ * AI Smart Advisor
+ */
+router.use("/advisor", advisorRoutes);
 
 export default router;

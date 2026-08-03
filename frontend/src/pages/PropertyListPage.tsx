@@ -199,71 +199,82 @@ export default function PropertyListPage() {
 
           </div>
 
-          {pagination &&
-            pagination.pages > 1 && (
-              <div className="mt-10 flex items-center justify-center gap-2">
+         {pagination && pagination.pages > 1 && (
+  <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
 
-                <button
-                  disabled={
-                    pagination.page ===
-                    1
-                  }
-                  onClick={() =>
-                    changePage(
-                      pagination.page -
-                        1
-                    )
-                  }
-                  className="rounded-lg border bg-white px-4 py-2 shadow-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  ← Previous
-                </button>
+    {/* Previous */}
+    <button
+      disabled={pagination.page === 1}
+      onClick={() => changePage(pagination.page - 1)}
+      className="rounded-lg border bg-white px-4 py-2 shadow-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      ← Previous
+    </button>
 
-                {Array.from(
-                  {
-                    length:
-                      pagination.pages,
-                  },
-                  (_, index) => (
-                    <button
-                      key={
-                        index + 1
-                      }
-                      onClick={() =>
-                        changePage(
-                          index + 1
-                        )
-                      }
-                      className={`rounded-lg px-4 py-2 transition ${
-                        pagination.page ===
-                        index + 1
-                          ? "bg-blue-600 text-white shadow"
-                          : "border bg-white hover:bg-gray-100"
-                      }`}
-                    >
-                      {index + 1}
-                    </button>
-                  )
-                )}
+    {/* First Page */}
+    {pagination.page > 3 && (
+      <>
+        <button
+          onClick={() => changePage(1)}
+          className="rounded-lg border bg-white px-4 py-2 hover:bg-gray-100"
+        >
+          1
+        </button>
 
-                <button
-                  disabled={
-                    pagination.page ===
-                    pagination.pages
-                  }
-                  onClick={() =>
-                    changePage(
-                      pagination.page +
-                        1
-                    )
-                  }
-                  className="rounded-lg border bg-white px-4 py-2 shadow-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Next →
-                </button>
+        {pagination.page > 4 && (
+          <span className="px-2 text-gray-400">...</span>
+        )}
+      </>
+    )}
 
-              </div>
-            )}
+    {/* Middle Pages */}
+    {Array.from({ length: pagination.pages }, (_, i) => i + 1)
+      .filter(
+        (page) =>
+          page >= pagination.page - 2 &&
+          page <= pagination.page + 2
+      )
+      .map((page) => (
+        <button
+          key={page}
+          onClick={() => changePage(page)}
+          className={`rounded-lg px-4 py-2 transition ${
+            page === pagination.page
+              ? "bg-blue-600 text-white shadow"
+              : "border bg-white hover:bg-gray-100"
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+
+    {/* Last Page */}
+    {pagination.page < pagination.pages - 2 && (
+      <>
+        {pagination.page < pagination.pages - 3 && (
+          <span className="px-2 text-gray-400">...</span>
+        )}
+
+        <button
+          onClick={() => changePage(pagination.pages)}
+          className="rounded-lg border bg-white px-4 py-2 hover:bg-gray-100"
+        >
+          {pagination.pages}
+        </button>
+      </>
+    )}
+
+    {/* Next */}
+    <button
+      disabled={pagination.page === pagination.pages}
+      onClick={() => changePage(pagination.page + 1)}
+      className="rounded-lg border bg-white px-4 py-2 shadow-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      Next →
+    </button>
+
+  </div>
+)}
         </>
       )}
     </div>

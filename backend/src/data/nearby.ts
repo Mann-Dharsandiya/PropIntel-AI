@@ -1,0 +1,17 @@
+ export const nearby = [
+  "Metro Station",
+  "Railway Station",
+  "Airport",
+  "School",
+  "College",
+  "Hospital",
+  "IT Park",
+  "Shopping Mall",
+  "Bus Stop",
+  "Restaurant",
+  "Supermarket",
+  "Pharmacy",
+  "Temple",
+  "Garden",
+  "Bank",
+];
