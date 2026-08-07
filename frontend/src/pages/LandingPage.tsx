@@ -1,4 +1,5 @@
 import { useHealthCheck } from '@/hooks/useHealthCheck';
+import { useNavigate } from "react-router-dom";
 
 const LEDGER_STATS = [
   { label: 'Parcels indexed', value: '4.2M', unit: 'nationwide' },
@@ -26,6 +27,7 @@ const FEATURES = [
 
 export default function LandingPage() {
   const { data: health, isLoading, isError } = useHealthCheck();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -50,15 +52,69 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button className="rounded-sm bg-brass-500 px-7 py-3.5 font-mono text-sm uppercase tracking-wider text-blueprint-900 transition hover:bg-brass-300">
-              Request a valuation
-            </button>
-            <button className="rounded-sm border border-blueprint-600 px-7 py-3.5 font-mono text-sm uppercase tracking-wider text-slate-200 transition hover:border-brass-400 hover:text-brass-300">
-              View live demo
-            </button>
-          </div>
+  <button className="rounded-sm bg-brass-500 px-7 py-3.5 font-mono text-sm uppercase tracking-wider text-blueprint-900 transition hover:bg-brass-300">
+    Request a valuation
+  </button>
 
-          {/* Ledger */}
+  <button className="rounded-sm border border-blueprint-600 px-7 py-3.5 font-mono text-sm uppercase tracking-wider text-slate-200 transition hover:border-brass-400 hover:text-brass-300">
+    View live demo
+  </button>
+</div>
+
+{/* =============================== */}
+{/* Financial Intelligence Suite */}
+{/* =============================== */}
+
+<div className="mt-14 rounded-sm border border-blueprint-700/70 bg-blueprint-900/80 p-8 shadow-2xl">
+
+  <div className="flex flex-col items-center text-center">
+
+    <div className="mb-4 text-5xl">
+      💰
+    </div>
+
+    <h2 className="font-display text-3xl text-paper">
+      Financial Intelligence Suite
+    </h2>
+
+    <p className="mt-4 max-w-2xl text-slate-300">
+      Plan your next property investment using AI-powered financial
+      analysis, EMI planning, loan eligibility, ROI forecasting and
+      investment insights.
+    </p>
+
+    <div className="mt-8 flex flex-wrap justify-center gap-3">
+
+      <span className="rounded-full border border-blueprint-600 px-4 py-2 font-mono text-xs uppercase tracking-wider text-brass-300">
+        💰 EMI Calculator
+      </span>
+
+      <span className="rounded-full border border-blueprint-600 px-4 py-2 font-mono text-xs uppercase tracking-wider text-brass-300">
+        🏦 Loan Eligibility
+      </span>
+
+      <span className="rounded-full border border-blueprint-600 px-4 py-2 font-mono text-xs uppercase tracking-wider text-brass-300">
+        📈 ROI Analysis
+      </span>
+
+      <span className="rounded-full border border-blueprint-600 px-4 py-2 font-mono text-xs uppercase tracking-wider text-brass-300">
+        💹 Investment Planner
+      </span>
+
+    </div>
+
+    <button
+      onClick={() => navigate("/financial")}
+      className="mt-8 rounded-sm bg-brass-500 px-8 py-3.5 font-mono text-sm uppercase tracking-wider text-blueprint-900 transition duration-300 hover:-translate-y-1 hover:bg-brass-300"
+    >
+      🚀 Launch Financial AI
+    </button>
+
+  </div>
+
+</div>
+
+{/* Ledger */}
           <dl className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-blueprint-700/70 bg-blueprint-700/70 sm:grid-cols-3">
             {LEDGER_STATS.map((stat) => (
               <div key={stat.label} className="bg-blueprint-900 px-6 py-6">

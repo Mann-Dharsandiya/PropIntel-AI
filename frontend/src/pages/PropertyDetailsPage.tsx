@@ -19,6 +19,7 @@ import {
 import { getProperty, Property } from "@/api/property";
 import { addRecentlyViewed } from "@/api/recentlyViewed";
 import FavoriteButton from "@/components/property/FavoriteButton";
+import ScheduleVisitModal from "@/components/property/ScheduleVisitModal";
 
 export default function PropertyDetailsPage() {
 
@@ -37,6 +38,8 @@ export default function PropertyDetailsPage() {
 
   const [selectedImage, setSelectedImage] =
     useState(0);
+    const [showVisitModal, setShowVisitModal] =
+  useState(false);
 
   useEffect(() => {
 
@@ -646,28 +649,53 @@ console.log("IMAGE URL =", data.images[0]);
 
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-4">
+             <div className="mt-8 grid grid-cols-2 gap-4">
 
-                <a
-                  href={`mailto:${property.owner.email}`}
-                  className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-                >
+  <a
+    href={`mailto:${property.owner.email}`}
+    className="
+      flex items-center justify-center gap-2
+      rounded-2xl
+      bg-gradient-to-r
+      from-blue-600
+      to-indigo-600
+      px-6 py-3
+      font-semibold
+      text-white
+      shadow-lg
+      transition-all
+      duration-300
+      hover:scale-105
+      hover:shadow-xl
+    "
+  >
+    📧
+    Email Owner
+  </a>
 
-                  📧 Email Owner
+  <a
+    href={`tel:${property.owner.phone}`}
+    className="
+      flex items-center justify-center gap-2
+      rounded-2xl
+      bg-gradient-to-r
+      from-green-600
+      to-emerald-600
+      px-6 py-3
+      font-semibold
+      text-white
+      shadow-lg
+      transition-all
+      duration-300
+      hover:scale-105
+      hover:shadow-xl
+    "
+  >
+    📞
+    Call Owner
+  </a>
 
-                </a>
-
-                <a
-                  href={`tel:${property.owner.phone}`}
-                  className="rounded-xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700"
-                >
-
-                  📞 Call Owner
-
-                </a>
-
-              </div>
-
+</div>
             </>
 
           ) : (
@@ -694,37 +722,39 @@ console.log("IMAGE URL =", data.images[0]);
 
           <div className="grid gap-4">
 
-            <button
-              className="rounded-xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
-            >
-
-              📅 Schedule Visit
-
-            </button>
-
-            <button
-              className="rounded-xl bg-green-600 py-4 text-lg font-semibold text-white transition hover:bg-green-700"
-            >
-
-              💬 Contact Builder
-
-            </button>
+      <button
+  onClick={() => setShowVisitModal(true)}
+  className="rounded-xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
+>
+  📅 Schedule Visit
+</button>
 
             <button
-              className="rounded-xl bg-orange-500 py-4 text-lg font-semibold text-white transition hover:bg-orange-600"
-            >
+  onClick={() =>
+    property.owner &&
+    window.open(`tel:${property.owner.phone}`)
+  }
+  className="rounded-xl bg-green-600 py-4 text-lg font-semibold text-white transition hover:bg-green-700"
+>
+  💬 Contact Builder
+</button>
 
-              ⚖ Compare Property
+         <button
+  onClick={() => navigate("/compare-localities")}
+  className="rounded-xl bg-orange-500 py-4 text-lg font-semibold text-white transition hover:bg-orange-600"
+>
+  ⚖ Compare Property
+</button>
 
-            </button>
-
-            <button
-              className="rounded-xl border py-4 text-lg font-semibold transition hover:bg-gray-100"
-            >
-
-              📤 Share Property
-
-            </button>
+          <button
+  onClick={() => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Property link copied to clipboard.");
+  }}
+  className="rounded-xl border py-4 text-lg font-semibold transition hover:bg-gray-100"
+>
+  📤 Share Property
+</button>
 
           </div>
 
@@ -1014,8 +1044,14 @@ console.log("IMAGE URL =", data.images[0]);
 
         </button>
 
-      </div>
-          </div>
+        </div>
+
+      <ScheduleVisitModal
+        open={showVisitModal}
+        onClose={() => setShowVisitModal(false)}
+      />
+
+    </div>
 
   );
 

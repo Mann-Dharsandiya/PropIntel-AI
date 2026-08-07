@@ -4,7 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Loading } from "@/components/common/Loading";
 
+// =========================
 // Public Pages
+// =========================
+
 const LandingPage = lazy(() => import("@/pages/LandingPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
@@ -25,7 +28,10 @@ const ResendVerificationPage = lazy(
   () => import("@/pages/ResendVerificationPage")
 );
 
+// =========================
 // Main Pages
+// =========================
+
 const DashboardPage = lazy(
   () => import("@/pages/DashboardPage")
 );
@@ -62,15 +68,27 @@ const CompareLocalitiesPage = lazy(
   () => import("@/pages/CompareLocalitiesPage")
 );
 
-/**
- * NEW
- * Smart AI Advisor
- */
+// =========================
+// Smart AI Advisor
+// =========================
+
 const AIAdvisorPage = lazy(
   () => import("@/pages/AIAdvisorPage")
 );
 
+// =========================
+// ⭐ NEW
+// Financial Intelligence Suite
+// =========================
+
+const FinancialPage = lazy(
+  () => import("@/pages/FinancialPage")
+);
+
+// =========================
 // 404
+// =========================
+
 const NotFoundPage = lazy(
   () => import("@/pages/NotFoundPage")
 );
@@ -84,12 +102,14 @@ export default function AppRoutes() {
         <Route element={<Layout />}>
 
           {/* Landing */}
+
           <Route
             path="/"
             element={<LandingPage />}
           />
 
           {/* Authentication */}
+
           <Route
             path="/login"
             element={<LoginPage />}
@@ -111,6 +131,7 @@ export default function AppRoutes() {
           />
 
           {/* Email Verification */}
+
           <Route
             path="/verify-email/:token"
             element={<VerifyEmailPage />}
@@ -122,6 +143,7 @@ export default function AppRoutes() {
           />
 
           {/* Dashboard */}
+
           <Route
             path="/dashboard"
             element={<DashboardPage />}
@@ -137,7 +159,8 @@ export default function AppRoutes() {
             element={<FavoritesPage />}
           />
 
-          {/* Property */}
+          {/* Properties */}
+
           <Route
             path="/properties"
             element={<PropertyListPage />}
@@ -148,7 +171,8 @@ export default function AppRoutes() {
             element={<PropertyDetailsPage />}
           />
 
-          {/* AI / ML */}
+          {/* AI Modules */}
+
           <Route
             path="/predict-price"
             element={<PricePredictionPage />}
@@ -169,15 +193,22 @@ export default function AppRoutes() {
             element={<CompareLocalitiesPage />}
           />
 
-          {/* ========================= */}
           {/* Smart AI Advisor */}
-          {/* ========================= */}
+
           <Route
             path="/ai-advisor"
             element={<AIAdvisorPage />}
           />
 
+          {/* ⭐ Financial Intelligence */}
+
+          <Route
+            path="/financial"
+            element={<FinancialPage />}
+          />
+
           {/* 404 */}
+
           <Route
             path="*"
             element={<NotFoundPage />}
