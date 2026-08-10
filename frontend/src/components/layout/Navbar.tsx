@@ -1,43 +1,85 @@
- import { useState, useRef, useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+ import {
+  useState,
+  useRef,
+  useEffect,
+} from "react";
+
+import {
+  Link,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
+
 import {
   User,
   LayoutDashboard,
   Heart,
   History,
   LogOut,
+  BriefcaseBusiness,
 } from "lucide-react";
+
 import { useAuth } from "@/context/AuthContext";
 
 const NAV_LINKS = [
-  { label: "Properties", to: "/properties" },
-  { label: "AI Prediction", to: "/predict-price" },
-  { label: "AI Recommendation", to: "/recommendation" },
-  { label: "Locality AI", to: "/locality" },
-  { label: "Compare AI", to: "/compare-localities" },
+  {
+    label: "Properties",
+    to: "/properties",
+  },
+  {
+    label: "AI Prediction",
+    to: "/predict-price",
+  },
+  {
+    label: "AI Recommendation",
+    to: "/recommendation",
+  },
+  {
+    label: "Locality AI",
+    to: "/locality",
+  },
+  {
+    label: "Compare AI",
+    to: "/compare-localities",
+  },
 ];
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [open, setOpen] =
+    useState(false);
 
-  const profileRef = useRef<HTMLDivElement>(null);
+  const [profileOpen, setProfileOpen] =
+    useState(false);
+
+  const profileRef =
+    useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
   const { user, logout } = useAuth();
 
+  // =========================================================
+  // Close profile dropdown when clicking outside
+  // =========================================================
+
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(
+      event: MouseEvent
+    ) {
       if (
         profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
+        !profileRef.current.contains(
+          event.target as Node
+        )
       ) {
         setProfileOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
 
     return () =>
       document.removeEventListener(
@@ -46,6 +88,10 @@ export default function Navbar() {
       );
   }, []);
 
+  // =========================================================
+  // User initials
+  // =========================================================
+
   const initials =
     user?.name
       ?.split(" ")
@@ -53,12 +99,22 @@ export default function Navbar() {
       .join("")
       .toUpperCase() || "U";
 
+  // =========================================================
+  // Logout
+  // =========================================================
+
   function handleLogout() {
     logout();
+
     setProfileOpen(false);
     setOpen(false);
+
     navigate("/");
   }
+
+  // =========================================================
+  // Close menus
+  // =========================================================
 
   function closeMenus() {
     setProfileOpen(false);
@@ -67,14 +123,22 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-blueprint-700/60 bg-blueprint-900/95 backdrop-blur">
+
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+
+        {/* ================================================= */}
         {/* Logo */}
+        {/* ================================================= */}
 
         <Link
           to="/"
           className="flex items-center gap-2.5"
         >
-          <svg width="26" height="26" viewBox="0 0 32 32">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 32 32"
+          >
             <rect
               width="32"
               height="32"
@@ -98,13 +162,19 @@ export default function Navbar() {
           </svg>
 
           <span className="font-display text-lg tracking-tight text-paper">
-            PropIntel <span className="text-brass-400">AI</span>
+            PropIntel{" "}
+            <span className="text-brass-400">
+              AI
+            </span>
           </span>
         </Link>
 
+        {/* ================================================= */}
         {/* Desktop Navigation */}
+        {/* ================================================= */}
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden items-center gap-6 md:flex">
+
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.label}
@@ -120,19 +190,27 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+
         </div>
 
+        {/* ================================================= */}
         {/* Desktop Right */}
+        {/* ================================================= */}
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden items-center gap-4 md:flex">
+
           {!user ? (
             <>
+              {/* Sign In */}
+
               <NavLink
                 to="/login"
                 className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300 hover:text-brass-300"
               >
                 Sign In
               </NavLink>
+
+              {/* Register */}
 
               <NavLink
                 to="/register"
@@ -146,12 +224,19 @@ export default function Navbar() {
               className="relative"
               ref={profileRef}
             >
+
+              {/* Profile Button */}
+
               <button
+                type="button"
                 onClick={() =>
-                  setProfileOpen(!profileOpen)
+                  setProfileOpen(
+                    !profileOpen
+                  )
                 }
                 className="flex items-center gap-3 rounded-full border border-slate-600 px-2 py-1 transition hover:bg-blueprint-800"
               >
+
                 {user.profileImage ? (
                   <img
                     src={user.profileImage}
@@ -165,6 +250,7 @@ export default function Navbar() {
                 )}
 
                 <div className="text-left">
+
                   <p className="text-sm font-semibold text-white">
                     {user.name}
                   </p>
@@ -172,13 +258,24 @@ export default function Navbar() {
                   <p className="text-xs text-slate-400">
                     View Profile ▼
                   </p>
+
                 </div>
+
               </button>
 
+              {/* ================================================= */}
+              {/* Profile Dropdown */}
+              {/* ================================================= */}
+
               {profileOpen && (
-                <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-xl border bg-white shadow-xl">
+                <div className="absolute right-0 mt-3 w-72 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+
+                  {/* User Header */}
+
                   <div className="border-b p-4">
+
                     <div className="flex items-center gap-3">
+
                       {user.profileImage ? (
                         <img
                           src={user.profileImage}
@@ -191,88 +288,170 @@ export default function Navbar() {
                         </div>
                       )}
 
-                      <div>
-                        <h3 className="font-bold">
+                      <div className="min-w-0">
+
+                        <h3 className="truncate font-bold text-slate-900">
                           {user.name}
                         </h3>
 
-                        <p className="text-sm text-gray-500">
+                        <p className="truncate text-sm text-gray-500">
                           {user.email}
                         </p>
+
                       </div>
+
                     </div>
+
                   </div>
+
+                  {/* My Profile */}
 
                   <Link
                     to="/profile"
                     onClick={closeMenus}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+                    className="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-gray-100"
                   >
                     <User size={18} />
-                    My Profile
+
+                    <span>
+                      My Profile
+                    </span>
                   </Link>
+
+                  {/* Dashboard */}
 
                   <Link
                     to="/dashboard"
                     onClick={closeMenus}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+                    className="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-gray-100"
                   >
-                    <LayoutDashboard size={18} />
-                    Dashboard
+                    <LayoutDashboard
+                      size={18}
+                    />
+
+                    <span>
+                      Dashboard
+                    </span>
                   </Link>
+
+                  {/* ================================================= */}
+                  {/* Investment Portfolio - NEW */}
+                  {/* ================================================= */}
+
+                  <Link
+                    to="/portfolio"
+                    onClick={closeMenus}
+                    className="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+                  >
+
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                      <BriefcaseBusiness
+                        size={18}
+                      />
+                    </div>
+
+                    <div>
+                      <p className="font-semibold">
+                        Investment Portfolio
+                      </p>
+
+                      <p className="text-xs text-slate-500">
+                        Manage your investments
+                      </p>
+                    </div>
+
+                  </Link>
+
+                  {/* Favorites */}
 
                   <Link
                     to="/favorites"
                     onClick={closeMenus}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+                    className="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-gray-100"
                   >
                     <Heart size={18} />
-                    Favorites
+
+                    <span>
+                      Favorites
+                    </span>
                   </Link>
+
+                  {/* Recently Viewed */}
 
                   <Link
                     to="/recently-viewed"
                     onClick={closeMenus}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+                    className="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-gray-100"
                   >
                     <History size={18} />
-                    Recently Viewed
+
+                    <span>
+                      Recently Viewed
+                    </span>
                   </Link>
 
-                  <button
-                    onClick={handleLogout}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50"
-                  >
-                    <LogOut size={18} />
-                    Logout
-                  </button>
+                  {/* Logout */}
+
+                  <div className="border-t">
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-3 px-4 py-3 text-red-600 transition hover:bg-red-50"
+                    >
+                      <LogOut
+                        size={18}
+                      />
+
+                      <span>
+                        Logout
+                      </span>
+                    </button>
+
+                  </div>
+
                 </div>
               )}
+
             </div>
           )}
+
         </div>
 
+        {/* ================================================= */}
         {/* Mobile Menu Button */}
+        {/* ================================================= */}
 
         <button
+          type="button"
+          aria-label="Toggle navigation menu"
           className="text-white md:hidden"
-          onClick={() => setOpen(!open)}
+          onClick={() =>
+            setOpen(!open)
+          }
         >
           ☰
         </button>
+
       </nav>
 
+      {/* ===================================================== */}
       {/* Mobile Menu */}
+      {/* ===================================================== */}
 
       {open && (
         <div className="border-t border-blueprint-700/60 bg-blueprint-900 px-6 py-5 md:hidden">
+
           <div className="flex flex-col gap-4">
+
+            {/* Main Navigation */}
+
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.label}
                 to={link.to}
                 onClick={closeMenus}
-                className="text-slate-300"
+                className="text-slate-300 transition hover:text-brass-300"
               >
                 {link.label}
               </NavLink>
@@ -280,61 +459,115 @@ export default function Navbar() {
 
             {!user ? (
               <>
+                {/* Mobile Sign In */}
+
                 <NavLink
                   to="/login"
                   onClick={closeMenus}
+                  className="text-slate-300"
                 >
                   Sign In
                 </NavLink>
 
+                {/* Mobile Register */}
+
                 <NavLink
                   to="/register"
                   onClick={closeMenus}
+                  className="text-slate-300"
                 >
                   Register
                 </NavLink>
               </>
             ) : (
               <>
+                {/* Mobile Profile */}
+
                 <NavLink
                   to="/profile"
                   onClick={closeMenus}
+                  className="flex items-center gap-3 text-slate-300"
                 >
+                  <User size={18} />
+
                   Profile
                 </NavLink>
+
+                {/* Mobile Dashboard */}
 
                 <NavLink
                   to="/dashboard"
                   onClick={closeMenus}
+                  className="flex items-center gap-3 text-slate-300"
                 >
+                  <LayoutDashboard
+                    size={18}
+                  />
+
                   Dashboard
                 </NavLink>
+
+                {/* ================================================= */}
+                {/* Mobile Investment Portfolio - NEW */}
+                {/* ================================================= */}
+
+                <NavLink
+                  to="/portfolio"
+                  onClick={closeMenus}
+                  className="flex items-center gap-3 font-semibold text-blue-300"
+                >
+                  <BriefcaseBusiness
+                    size={18}
+                  />
+
+                  Investment Portfolio
+                </NavLink>
+
+                {/* Mobile Favorites */}
 
                 <NavLink
                   to="/favorites"
                   onClick={closeMenus}
+                  className="flex items-center gap-3 text-slate-300"
                 >
+                  <Heart size={18} />
+
                   Favorites
                 </NavLink>
+
+                {/* Mobile Recently Viewed */}
 
                 <NavLink
                   to="/recently-viewed"
                   onClick={closeMenus}
+                  className="flex items-center gap-3 text-slate-300"
                 >
+                  <History size={18} />
+
                   Recently Viewed
                 </NavLink>
 
+                {/* Mobile Logout */}
+
                 <button
+                  type="button"
                   onClick={handleLogout}
-                  className="text-left text-red-400"
+                  className="flex items-center gap-3 text-left text-red-400"
                 >
+                  <LogOut
+                    size={18}
+                  />
+
                   Logout
                 </button>
               </>
             )}
+
           </div>
+
         </div>
       )}
+
     </header>
   );
 }

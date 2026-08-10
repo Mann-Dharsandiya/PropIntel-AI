@@ -4,13 +4,23 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Loading } from "@/components/common/Loading";
 
+import { PortfolioProvider } from "@/context/PortfolioContext";
+
 // =========================
 // Public Pages
 // =========================
 
-const LandingPage = lazy(() => import("@/pages/LandingPage"));
-const LoginPage = lazy(() => import("@/pages/LoginPage"));
-const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
+const LandingPage = lazy(
+  () => import("@/pages/LandingPage")
+);
+
+const LoginPage = lazy(
+  () => import("@/pages/LoginPage")
+);
+
+const RegisterPage = lazy(
+  () => import("@/pages/RegisterPage")
+);
 
 const ForgotPasswordPage = lazy(
   () => import("../pages/ForgotPasswordPage")
@@ -77,12 +87,20 @@ const AIAdvisorPage = lazy(
 );
 
 // =========================
-// ⭐ NEW
 // Financial Intelligence Suite
 // =========================
 
 const FinancialPage = lazy(
   () => import("@/pages/FinancialPage")
+);
+
+// =========================
+// ⭐ Phase 11
+// Investment Portfolio
+// =========================
+
+const PortfolioPage = lazy(
+  () => import("@/pages/PortfolioPage")
 );
 
 // =========================
@@ -96,19 +114,30 @@ const NotFoundPage = lazy(
 export default function AppRoutes() {
   return (
     <Suspense
-      fallback={<Loading label="Loading page..." />}
+      fallback={
+        <Loading />
+      }
     >
       <Routes>
+
+        {/* ========================= */}
+        {/* Application Layout */}
+        {/* ========================= */}
+
         <Route element={<Layout />}>
 
+          {/* ========================= */}
           {/* Landing */}
+          {/* ========================= */}
 
           <Route
             path="/"
             element={<LandingPage />}
           />
 
+          {/* ========================= */}
           {/* Authentication */}
+          {/* ========================= */}
 
           <Route
             path="/login"
@@ -130,7 +159,9 @@ export default function AppRoutes() {
             element={<ResetPasswordPage />}
           />
 
+          {/* ========================= */}
           {/* Email Verification */}
+          {/* ========================= */}
 
           <Route
             path="/verify-email/:token"
@@ -142,7 +173,9 @@ export default function AppRoutes() {
             element={<ResendVerificationPage />}
           />
 
+          {/* ========================= */}
           {/* Dashboard */}
+          {/* ========================= */}
 
           <Route
             path="/dashboard"
@@ -159,7 +192,9 @@ export default function AppRoutes() {
             element={<FavoritesPage />}
           />
 
+          {/* ========================= */}
           {/* Properties */}
+          {/* ========================= */}
 
           <Route
             path="/properties"
@@ -171,7 +206,9 @@ export default function AppRoutes() {
             element={<PropertyDetailsPage />}
           />
 
+          {/* ========================= */}
           {/* AI Modules */}
+          {/* ========================= */}
 
           <Route
             path="/predict-price"
@@ -193,21 +230,41 @@ export default function AppRoutes() {
             element={<CompareLocalitiesPage />}
           />
 
+          {/* ========================= */}
           {/* Smart AI Advisor */}
+          {/* ========================= */}
 
           <Route
             path="/ai-advisor"
             element={<AIAdvisorPage />}
           />
 
-          {/* ⭐ Financial Intelligence */}
+          {/* ========================= */}
+          {/* Financial Intelligence */}
+          {/* ========================= */}
 
           <Route
             path="/financial"
             element={<FinancialPage />}
           />
 
+          {/* ========================= */}
+          {/* ⭐ Phase 11 */}
+          {/* Investment Portfolio */}
+          {/* ========================= */}
+
+          <Route
+            path="/portfolio"
+            element={
+              <PortfolioProvider>
+                <PortfolioPage />
+              </PortfolioProvider>
+            }
+          />
+
+          {/* ========================= */}
           {/* 404 */}
+          {/* ========================= */}
 
           <Route
             path="*"
