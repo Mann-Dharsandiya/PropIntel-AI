@@ -1,115 +1,220 @@
- import { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+ import {
+  Suspense,
+  lazy,
+} from "react";
+
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Layout from "@/components/layout/Layout";
-import { Loading } from "@/components/common/Loading";
 
-import { PortfolioProvider } from "@/context/PortfolioContext";
+import {
+  Loading,
+} from "@/components/common/Loading";
 
-// =========================
-// Public Pages
-// =========================
+import {
+  PortfolioProvider,
+} from "@/context/PortfolioContext";
+
+// =========================================================
+// PUBLIC PAGES
+// =========================================================
 
 const LandingPage = lazy(
-  () => import("@/pages/LandingPage")
+  () =>
+    import(
+      "@/pages/LandingPage"
+    )
 );
 
 const LoginPage = lazy(
-  () => import("@/pages/LoginPage")
+  () =>
+    import(
+      "@/pages/LoginPage"
+    )
 );
 
 const RegisterPage = lazy(
-  () => import("@/pages/RegisterPage")
+  () =>
+    import(
+      "@/pages/RegisterPage"
+    )
 );
 
 const ForgotPasswordPage = lazy(
-  () => import("../pages/ForgotPasswordPage")
+  () =>
+    import(
+      "@/pages/ForgotPasswordPage"
+    )
 );
 
 const ResetPasswordPage = lazy(
-  () => import("../pages/ResetPasswordPage")
+  () =>
+    import(
+      "@/pages/ResetPasswordPage"
+    )
 );
 
 const VerifyEmailPage = lazy(
-  () => import("@/pages/VerifyEmailPage")
+  () =>
+    import(
+      "@/pages/VerifyEmailPage"
+    )
 );
 
 const ResendVerificationPage = lazy(
-  () => import("@/pages/ResendVerificationPage")
+  () =>
+    import(
+      "@/pages/ResendVerificationPage"
+    )
 );
 
-// =========================
-// Main Pages
-// =========================
+// =========================================================
+// MAIN PAGES
+// =========================================================
 
 const DashboardPage = lazy(
-  () => import("@/pages/DashboardPage")
+  () =>
+    import(
+      "@/pages/DashboardPage"
+    )
 );
 
 const ProfilePage = lazy(
-  () => import("@/pages/ProfilePage")
+  () =>
+    import(
+      "@/pages/ProfilePage"
+    )
 );
 
 const FavoritesPage = lazy(
-  () => import("@/pages/FavoritesPage")
+  () =>
+    import(
+      "@/pages/FavoritesPage"
+    )
 );
 
 const PropertyListPage = lazy(
-  () => import("@/pages/PropertyListPage")
+  () =>
+    import(
+      "@/pages/PropertyListPage"
+    )
 );
 
 const PropertyDetailsPage = lazy(
-  () => import("@/pages/PropertyDetailsPage")
+  () =>
+    import(
+      "@/pages/PropertyDetailsPage"
+    )
 );
 
+// =========================================================
+// AI MODULES
+// =========================================================
+
 const PricePredictionPage = lazy(
-  () => import("@/pages/PricePredictionPage")
+  () =>
+    import(
+      "@/pages/PricePredictionPage"
+    )
 );
 
 const RecommendationPage = lazy(
-  () => import("@/pages/RecommendationPage")
+  () =>
+    import(
+      "@/pages/RecommendationPage"
+    )
 );
 
 const LocalityPage = lazy(
-  () => import("@/pages/LocalityPage")
+  () =>
+    import(
+      "@/pages/LocalityPage"
+    )
 );
 
 const CompareLocalitiesPage = lazy(
-  () => import("@/pages/CompareLocalitiesPage")
+  () =>
+    import(
+      "@/pages/CompareLocalitiesPage"
+    )
 );
 
-// =========================
-// Smart AI Advisor
-// =========================
+// =========================================================
+// SMART AI ADVISOR
+// =========================================================
 
 const AIAdvisorPage = lazy(
-  () => import("@/pages/AIAdvisorPage")
+  () =>
+    import(
+      "@/pages/AIAdvisorPage"
+    )
 );
 
-// =========================
-// Financial Intelligence Suite
-// =========================
+// =========================================================
+// FINANCIAL INTELLIGENCE
+// =========================================================
 
 const FinancialPage = lazy(
-  () => import("@/pages/FinancialPage")
+  () =>
+    import(
+      "@/pages/FinancialPage"
+    )
 );
 
-// =========================
-// ⭐ Phase 11
-// Investment Portfolio
-// =========================
+// =========================================================
+// PHASE 11
+// INVESTMENT PORTFOLIO
+// =========================================================
 
 const PortfolioPage = lazy(
-  () => import("@/pages/PortfolioPage")
+  () =>
+    import(
+      "@/pages/PortfolioPage"
+    )
 );
 
-// =========================
+// =========================================================
+// PHASE 12
+// AI REPORTS
+// =========================================================
+
+const ReportsPage = lazy(
+  () =>
+    import(
+      "@/pages/ReportsPage"
+    )
+);
+
+// =========================================================
+// PHASE 12
+// MARKET INTELLIGENCE
+// =========================================================
+
+const MarketIntelligencePage = lazy(
+  () =>
+    import(
+      "@/pages/MarketIntelligencePage"
+    )
+);
+
+// =========================================================
 // 404
-// =========================
+// =========================================================
 
 const NotFoundPage = lazy(
-  () => import("@/pages/NotFoundPage")
+  () =>
+    import(
+      "@/pages/NotFoundPage"
+    )
 );
+
+// =========================================================
+// APPLICATION ROUTES
+// =========================================================
 
 export default function AppRoutes() {
   return (
@@ -118,140 +223,181 @@ export default function AppRoutes() {
         <Loading />
       }
     >
+
       <Routes>
 
-        {/* ========================= */}
-        {/* Application Layout */}
-        {/* ========================= */}
+        {/* ================================================= */}
+        {/* APPLICATION LAYOUT */}
+        {/* ================================================= */}
 
-        <Route element={<Layout />}>
+        <Route
+          element={
+            <Layout />
+          }
+        >
 
-          {/* ========================= */}
-          {/* Landing */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* HOME */}
+          {/* ================================================= */}
 
           <Route
             path="/"
-            element={<LandingPage />}
+            element={
+              <LandingPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* Authentication */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* AUTHENTICATION */}
+          {/* ================================================= */}
 
           <Route
             path="/login"
-            element={<LoginPage />}
+            element={
+              <LoginPage />
+            }
           />
 
           <Route
             path="/register"
-            element={<RegisterPage />}
+            element={
+              <RegisterPage />
+            }
           />
 
           <Route
             path="/forgot-password"
-            element={<ForgotPasswordPage />}
+            element={
+              <ForgotPasswordPage />
+            }
           />
 
           <Route
             path="/reset-password/:token"
-            element={<ResetPasswordPage />}
+            element={
+              <ResetPasswordPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* Email Verification */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* EMAIL VERIFICATION */}
+          {/* ================================================= */}
 
           <Route
             path="/verify-email/:token"
-            element={<VerifyEmailPage />}
+            element={
+              <VerifyEmailPage />
+            }
           />
 
           <Route
             path="/resend-verification"
-            element={<ResendVerificationPage />}
+            element={
+              <ResendVerificationPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* Dashboard */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* DASHBOARD */}
+          {/* ================================================= */}
 
           <Route
             path="/dashboard"
-            element={<DashboardPage />}
+            element={
+              <DashboardPage />
+            }
           />
 
           <Route
             path="/profile"
-            element={<ProfilePage />}
+            element={
+              <ProfilePage />
+            }
           />
 
           <Route
             path="/favorites"
-            element={<FavoritesPage />}
+            element={
+              <FavoritesPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* Properties */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* PROPERTIES */}
+          {/* ================================================= */}
 
           <Route
             path="/properties"
-            element={<PropertyListPage />}
+            element={
+              <PropertyListPage />
+            }
           />
 
           <Route
             path="/properties/:id"
-            element={<PropertyDetailsPage />}
+            element={
+              <PropertyDetailsPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* AI Modules */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* AI MODULES */}
+          {/* ================================================= */}
 
           <Route
             path="/predict-price"
-            element={<PricePredictionPage />}
+            element={
+              <PricePredictionPage />
+            }
           />
 
           <Route
             path="/recommendation"
-            element={<RecommendationPage />}
+            element={
+              <RecommendationPage />
+            }
           />
 
           <Route
             path="/locality"
-            element={<LocalityPage />}
+            element={
+              <LocalityPage />
+            }
           />
 
           <Route
             path="/compare-localities"
-            element={<CompareLocalitiesPage />}
+            element={
+              <CompareLocalitiesPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* Smart AI Advisor */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* SMART AI ADVISOR */}
+          {/* ================================================= */}
 
           <Route
             path="/ai-advisor"
-            element={<AIAdvisorPage />}
+            element={
+              <AIAdvisorPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* Financial Intelligence */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* FINANCIAL INTELLIGENCE */}
+          {/* ================================================= */}
 
           <Route
             path="/financial"
-            element={<FinancialPage />}
+            element={
+              <FinancialPage />
+            }
           />
 
-          {/* ========================= */}
-          {/* ⭐ Phase 11 */}
-          {/* Investment Portfolio */}
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* PHASE 11 */}
+          {/* INVESTMENT PORTFOLIO */}
+          {/* ================================================= */}
 
           <Route
             path="/portfolio"
@@ -262,17 +408,59 @@ export default function AppRoutes() {
             }
           />
 
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* PHASE 12 */}
+          {/* AI REPORTS */}
+          {/* ================================================= */}
+
+          <Route
+            path="/reports"
+            element={
+              <ReportsPage />
+            }
+          />
+
+          {/* ================================================= */}
+          {/* PHASE 12 */}
+          {/* MARKET INTELLIGENCE */}
+          {/* ================================================= */}
+
+          <Route
+            path="/market-intelligence"
+            element={
+              <MarketIntelligencePage />
+            }
+          />
+
+          {/* ================================================= */}
+          {/* BACKWARD COMPATIBILITY */}
+          {/* ================================================= */}
+
+          <Route
+            path="/reports/market"
+            element={
+              <Navigate
+                to="/market-intelligence"
+                replace
+              />
+            }
+          />
+
+          {/* ================================================= */}
           {/* 404 */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           <Route
             path="*"
-            element={<NotFoundPage />}
+            element={
+              <NotFoundPage />
+            }
           />
 
         </Route>
+
       </Routes>
+
     </Suspense>
   );
 }

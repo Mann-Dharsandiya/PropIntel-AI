@@ -11,6 +11,7 @@ import favoriteRoutes from "./favorite.routes";
 import dashboardRoutes from "./dashboard.routes";
 import portfolioRoutes from "./portfolio.routes";
 import portfolioInsightsRoutes from "./portfolioInsights.routes";
+import reportRoutes from "./report.routes";
 
 import advisorRoutes from "../ai/advisor.routes";
 
@@ -78,6 +79,14 @@ router.use(
 router.use(
   "/portfolio-insights",
   portfolioInsightsRoutes
+);
+
+/**
+ * AI Reports
+ */
+router.use(
+  "/reports",
+  reportRoutes
 );
 
 /**
