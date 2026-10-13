@@ -14,6 +14,15 @@ import {
   BedDouble,
   Bath,
   Ruler,
+  CalendarDays,
+  Phone,
+  Mail,
+  Share2,
+  Scale,
+  Sparkles,
+  CheckCircle2,
+  Navigation,
+  ExternalLink,
 } from "lucide-react";
 
 import { getProperty, Property } from "@/api/property";
@@ -21,10 +30,70 @@ import { addRecentlyViewed } from "@/api/recentlyViewed";
 import FavoriteButton from "@/components/property/FavoriteButton";
 import ScheduleVisitModal from "@/components/property/ScheduleVisitModal";
 
+/* =========================================================
+   FALLBACK GALLERY IMAGES
+========================================================= */
+
+function getFallbackGallery(propertyType: string): string[] {
+  switch (propertyType) {
+    case "Apartment":
+      return [
+        "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85",
+      ];
+
+    case "Villa":
+      return [
+        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=85",
+      ];
+
+    case "House":
+      return [
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600566753051-f0b89df2dd90?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600585153490-76fb20a32601?auto=format&fit=crop&w=1400&q=85",
+      ];
+
+    case "Plot":
+      return [
+        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1400&q=85",
+      ];
+
+    case "Commercial":
+      return [
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=1400&q=85",
+      ];
+
+    default:
+      return [
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1600607688960-e095ff83135c?auto=format&fit=crop&w=1400&q=85",
+      ];
+  }
+}
+
 export default function PropertyDetailsPage() {
-
   const { id } = useParams();
-
   const navigate = useNavigate();
 
   const [property, setProperty] =
@@ -38,1021 +107,1341 @@ export default function PropertyDetailsPage() {
 
   const [selectedImage, setSelectedImage] =
     useState(0);
-    const [showVisitModal, setShowVisitModal] =
-  useState(false);
+
+  const [showVisitModal, setShowVisitModal] =
+    useState(false);
 
   useEffect(() => {
-
     async function loadProperty() {
-
       try {
-
         if (!id) return;
 
-        const data =
-          await getProperty(id);
+        const data = await getProperty(id);
 
         setProperty(data);
+
         console.log("PROPERTY =", data);
-console.log("IMAGE URL =", data.images[0]);
-
+        console.log("IMAGES =", data.images);
       } catch (err) {
-
         setError(
           err instanceof Error
             ? err.message
             : "Unable to load property."
         );
-
       } finally {
-
         setLoading(false);
-
       }
-
     }
 
     loadProperty();
-
   }, [id]);
 
   useEffect(() => {
-
     if (!property?._id) return;
 
     addRecentlyViewed(property._id)
       .catch(console.error);
-
   }, [property?._id]);
 
+  /* =========================================================
+     LOADING
+  ========================================================= */
+
   if (loading) {
-
     return (
+      <div className="pi-page flex min-h-screen items-center justify-center">
+        <div className="px-6 text-center">
 
-      <div className="flex h-screen items-center justify-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50">
+            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-blue-600 border-t-transparent" />
+          </div>
 
-        <div className="text-center">
+          <h2 className="mt-6 font-display text-2xl font-bold text-ink">
+            Loading Property
+          </h2>
 
-          <div className="mx-auto h-16 w-16 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-
-          <p className="mt-6 text-xl font-semibold">
-
-            Loading Property...
-
+          <p className="mt-2 text-sm text-slate-500">
+            Preparing property details for you...
           </p>
 
         </div>
-
       </div>
-
     );
-
   }
 
+  /* =========================================================
+     ERROR
+  ========================================================= */
+
   if (error) {
-
     return (
+      <div className="pi-page flex min-h-screen items-center justify-center px-5">
+        <div className="pi-card w-full max-w-md p-8 text-center md:p-10">
 
-      <div className="flex h-screen items-center justify-center">
-
-        <div className="text-center">
-
-          <div className="text-7xl">
-
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-red-100 bg-red-50 text-2xl">
             ⚠️
-
           </div>
 
-          <h2 className="mt-5 text-4xl font-bold">
-
+          <h2 className="mt-6 font-display text-2xl font-bold tracking-tight text-ink">
             Something went wrong
-
           </h2>
 
-          <p className="mt-3 text-gray-500">
-
+          <p className="mt-3 text-sm leading-6 text-slate-500">
             {error}
-
           </p>
 
           <button
-
+            type="button"
             onClick={() => navigate(-1)}
-
-            className="mt-8 rounded-xl bg-red-600 px-8 py-3 font-semibold text-white hover:bg-red-700"
-
+            className="pi-btn pi-btn-primary mt-7 w-full"
           >
-
+            <ArrowLeft size={17} />
             Go Back
-
           </button>
 
         </div>
-
       </div>
-
     );
-
   }
+
+  /* =========================================================
+     PROPERTY NOT FOUND
+  ========================================================= */
 
   if (!property) {
-
     return (
+      <div className="pi-page flex min-h-[70vh] items-center justify-center px-5">
+        <div className="text-center">
 
-      <div className="py-24 text-center text-2xl">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white text-2xl shadow-sm">
+            🏡
+          </div>
 
-        Property not found.
+          <h2 className="mt-5 font-display text-2xl font-bold text-ink">
+            Property not found
+          </h2>
 
+          <p className="mt-2 text-sm text-slate-500">
+            The property you're looking for is unavailable.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => navigate("/properties")}
+            className="pi-btn pi-btn-primary mt-6"
+          >
+            Browse Properties
+          </button>
+
+        </div>
       </div>
-
     );
-
   }
 
-  const images =
-    property.images?.length
-      ? property.images
-      : [
-          "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200",
-        ];
+  /* =========================================================
+     IMAGE GALLERY LOGIC
+  ========================================================= */
+
+  const fallbackImages =
+    getFallbackGallery(property.propertyType);
+
+  const backendImages =
+    Array.isArray(property.images)
+      ? property.images.filter(
+          (image): image is string =>
+            typeof image === "string" &&
+            image.trim().length > 0
+        )
+      : [];
+
+  const images = [
+    ...backendImages,
+    ...fallbackImages.filter(
+      (image) =>
+        !backendImages.includes(image)
+    ),
+  ].slice(0, 5);
+
+  if (images.length === 0) {
+    images.push(
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1400&q=85"
+    );
+  }
+
+  const safeSelectedImage =
+    selectedImage >= images.length
+      ? 0
+      : selectedImage;
 
   const nextImage = () => {
-
     setSelectedImage((prev) =>
-      prev === images.length - 1
+      prev >= images.length - 1
         ? 0
         : prev + 1
     );
-
   };
 
   const previousImage = () => {
-
     setSelectedImage((prev) =>
-      prev === 0
+      prev <= 0
         ? images.length - 1
         : prev - 1
     );
+  };
 
+  /* =========================================================
+     SHARE
+  ========================================================= */
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: property.title,
+          text: `Check out ${property.title} on PropIntel AI.`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(
+          window.location.href
+        );
+
+        alert(
+          "Property link copied to clipboard."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
+    <div className="pi-page min-h-screen">
 
-    <div className="mx-auto max-w-7xl p-6">
+      <div className="pi-container py-6 md:py-8 lg:py-10">
 
-        {/* Back Button */}
+        {/* =====================================================
+            BACK BUTTON
+        ====================================================== */}
 
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-8 flex items-center gap-2 rounded-xl border bg-white px-5 py-3 shadow transition hover:bg-gray-100"
-      >
-        <ArrowLeft size={18} />
-        Back to Listings
-      </button>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="pi-btn pi-btn-secondary mb-6"
+        >
+          <ArrowLeft size={17} />
+          Back to Listings
+        </button>
 
-      {/* ================= IMAGE GALLERY ================= */}
+        {/* =====================================================
+            IMAGE GALLERY
+        ====================================================== */}
 
-      <div className="grid gap-6 lg:grid-cols-4">
+        <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-3 shadow-sm md:p-4">
 
-        {/* Thumbnails */}
+          <div className="grid gap-3 lg:grid-cols-[112px_minmax(0,1fr)]">
 
-        <div className="order-2 flex gap-3 overflow-auto lg:order-1 lg:flex-col">
+            {/* =================================================
+                THUMBNAILS
+            ================================================== */}
 
-          {images.map((image, index) => (
+            <div className="order-2 flex gap-3 overflow-x-auto pb-1 lg:order-1 lg:flex-col lg:overflow-visible lg:pb-0">
 
-            <img
-              key={index}
-              src={image}
-              alt={`Property ${index + 1}`}
-              onClick={() => setSelectedImage(index)}
-              className={`h-24 w-28 cursor-pointer rounded-2xl border-2 object-cover transition-all duration-300 hover:scale-105 ${
-                selectedImage === index
-                  ? "border-blue-600 shadow-lg"
-                  : "border-transparent"
-              }`}
-            />
+              {images.map((image, index) => (
+                <button
+                  key={`${image}-${index}`}
+                  type="button"
+                  onClick={() =>
+                    setSelectedImage(index)
+                  }
+                  aria-label={`View property image ${index + 1}`}
+                  className={`
+                    group relative shrink-0 overflow-hidden
+                    rounded-2xl border-2
+                    transition-all duration-300
+                    ${
+                      safeSelectedImage === index
+                        ? "border-blue-600 shadow-md"
+                        : "border-transparent hover:border-slate-300"
+                    }
+                  `}
+                >
+                  <img
+                    src={image}
+                    alt={`Property ${index + 1}`}
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        fallbackImages[
+                          index %
+                            fallbackImages.length
+                        ];
+                    }}
+                    className="h-20 w-24 object-cover transition-transform duration-500 group-hover:scale-105 lg:h-[92px] lg:w-full"
+                  />
 
-          ))}
-
-        </div>
-
-        {/* Main Image */}
-
-        <div className="relative order-1 lg:order-2 lg:col-span-3">
-
-          <img
-            src={images[selectedImage]}
-            alt={property.title}
-            className="h-[560px] w-full rounded-3xl object-cover shadow-xl"
-          />
-
-          {/* Previous */}
-
-          <button
-            onClick={previousImage}
-            className="absolute left-5 top-1/2 -translate-y-1/2 rounded-full bg-white p-3 shadow-xl transition hover:scale-110"
-          >
-            <ChevronLeft size={24} />
-          </button>
-
-          {/* Next */}
-
-          <button
-            onClick={nextImage}
-            className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full bg-white p-3 shadow-xl transition hover:scale-110"
-          >
-            <ChevronRight size={24} />
-          </button>
-
-          {/* Featured */}
-
-          {property.featured && (
-
-            <div className="absolute left-6 top-6 rounded-full bg-yellow-400 px-5 py-2 text-sm font-bold text-black shadow-lg">
-
-              ⭐ Featured
+                  {safeSelectedImage === index && (
+                    <div className="absolute inset-0 border-2 border-blue-500/20" />
+                  )}
+                </button>
+              ))}
 
             </div>
 
-          )}
-
-          {/* Verified */}
-
-          {property.verified && (
-
-            <div className="absolute right-6 top-6 flex items-center gap-2 rounded-full bg-green-600 px-5 py-2 text-sm font-semibold text-white shadow-lg">
-
-              <ShieldCheck size={18} />
-
-              Verified
-
-            </div>
-
-          )}
-
-          {/* Property Type */}
-
-          <div className="absolute bottom-6 left-6 rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-lg">
-
-            {property.propertyType}
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ================= HERO ================= */}
-
-      <div className="mt-10 flex flex-col justify-between gap-8 lg:flex-row">
-
-        <div className="flex-1">
-
-          <div className="flex items-center gap-2 text-blue-600">
-
-            <Building2 size={20} />
-
-            <span className="font-semibold">
-
-              {property.builder}
-
-            </span>
-
-          </div>
-
-          <h1 className="mt-3 text-5xl font-bold leading-tight">
-
-            {property.title}
-
-          </h1>
-
-          <div className="mt-5 flex items-center gap-2 text-gray-500">
-
-            <MapPin size={20} />
-
-            <span>
-
-              {property.address},
-              {" "}
-              {property.locality},
-              {" "}
-              {property.city}
-
-            </span>
-
-          </div>
-
-          <div className="mt-6 flex items-center gap-3 text-5xl font-bold text-green-600">
-
-            <IndianRupee size={40} />
-
-            {property.price.toLocaleString("en-IN")}
-
-          </div>
-
-        </div>
-
-        {/* Favorite */}
-
-        <div>
-
-          <FavoriteButton
-            propertyId={property._id}
-          />
-
-        </div>
-
-      </div>
-
-      {/* ================= AI ANALYTICS ================= */}
-
-      <div className="mt-10 grid gap-5 md:grid-cols-4">
-
-        <div className="rounded-3xl bg-blue-50 p-6 shadow">
-
-          <p className="text-sm text-gray-500">
-
-            AI Score
-
-          </p>
-
-          <div className="mt-3 flex items-center gap-2">
-
-            <Star
-              className="text-yellow-500"
-              fill="currentColor"
-            />
-
-            <span className="text-3xl font-bold text-blue-700">
-
-              {property.aiScore}/10
-
-            </span>
-
-          </div>
-
-        </div>
-
-        <div className="rounded-3xl bg-green-50 p-6 shadow">
-
-          <p className="text-sm text-gray-500">
-
-            Rental Yield
-
-          </p>
-
-          <p className="mt-3 text-3xl font-bold text-green-700">
-
-            {property.rentalYield}%
-
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl bg-purple-50 p-6 shadow">
-
-          <p className="text-sm text-gray-500">
-
-            Appreciation
-
-          </p>
-
-          <p className="mt-3 text-3xl font-bold text-purple-700">
-
-            {property.appreciation}%
-
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl bg-orange-50 p-6 shadow">
-
-          <p className="text-sm text-gray-500">
-
-            Investment Score
-
-          </p>
-
-          <div className="mt-3 flex items-center gap-2">
-
-            <TrendingUp className="text-orange-600" />
-
-            <span className="text-3xl font-bold text-orange-700">
-
-              {property.investmentScore}/5
-
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-            {/* ================= PROPERTY FEATURES ================= */}
-
-      <div className="mt-10 grid gap-5 md:grid-cols-4">
-
-        <div className="rounded-3xl border bg-white p-6 text-center shadow-sm">
-
-          <BedDouble
-            size={34}
-            className="mx-auto text-blue-600"
-          />
-
-          <p className="mt-4 text-3xl font-bold">
-            {property.bedrooms}
-          </p>
-
-          <p className="text-gray-500">
-            Bedrooms
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl border bg-white p-6 text-center shadow-sm">
-
-          <Bath
-            size={34}
-            className="mx-auto text-blue-600"
-          />
-
-          <p className="mt-4 text-3xl font-bold">
-            {property.bathrooms}
-          </p>
-
-          <p className="text-gray-500">
-            Bathrooms
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl border bg-white p-6 text-center shadow-sm">
-
-          <Ruler
-            size={34}
-            className="mx-auto text-blue-600"
-          />
-
-          <p className="mt-4 text-3xl font-bold">
-            {property.area}
-          </p>
-
-          <p className="text-gray-500">
-            Sq.ft
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl border bg-white p-6 text-center shadow-sm">
-
-          <Building2
-            size={34}
-            className="mx-auto text-blue-600"
-          />
-
-          <p className="mt-4 text-xl font-bold">
-            {property.propertyType}
-          </p>
-
-          <p className="text-gray-500">
-            Property Type
-          </p>
-
-        </div>
-
-      </div>
-
-      {/* ================= DESCRIPTION ================= */}
-
-      <div className="mt-12 rounded-3xl border bg-white p-8 shadow-sm">
-
-        <h2 className="mb-5 text-3xl font-bold">
-
-          About this Property
-
-        </h2>
-
-        <p className="leading-8 text-gray-700">
-
-          {property.description}
-
-        </p>
-
-      </div>
-
-      {/* ================= AMENITIES ================= */}
-
-      <div className="mt-12 rounded-3xl border bg-white p-8 shadow-sm">
-
-        <h2 className="mb-6 text-3xl font-bold">
-
-          Amenities
-
-        </h2>
-
-        <div className="flex flex-wrap gap-4">
-
-          {property.amenities?.map((amenity: string) => (
-
-            <div
-              key={amenity}
-              className="rounded-full bg-blue-100 px-5 py-3 font-medium text-blue-700"
-            >
-
-              ✅ {amenity}
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-      {/* ================= NEARBY ================= */}
-
-      <div className="mt-12 rounded-3xl border bg-white p-8 shadow-sm">
-
-        <h2 className="mb-6 text-3xl font-bold">
-
-          Nearby Places
-
-        </h2>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-
-          {property.nearby?.map((place: string) => (
-
-            <div
-              key={place}
-              className="flex items-center gap-3 rounded-2xl bg-gray-100 p-4"
-            >
-
-              <MapPin
-                size={20}
-                className="text-red-500"
-              />
-
-              <span className="font-medium">
-
-                {place}
-
-              </span>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-            {/* ================= OWNER + ACTIONS ================= */}
-
-      <div className="mt-12 grid gap-8 lg:grid-cols-2">
-
-        {/* Owner */}
-
-        <div className="rounded-3xl border bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-3xl font-bold">
-
-            Property Owner
-
-          </h2>
-
-          {property.owner ? (
-
-            <>
-
-              <div className="space-y-4">
-
-                <p>
-
-                  👤 <strong>Name:</strong>{" "}
-                  {property.owner.name}
-
-                </p>
-
-                <p>
-
-                  📧 <strong>Email:</strong>{" "}
-                  {property.owner.email}
-
-                </p>
-
-                <p>
-
-                  📞 <strong>Phone:</strong>{" "}
-                  {property.owner.phone}
-
-                </p>
+            {/* =================================================
+                MAIN IMAGE
+            ================================================== */}
+
+            <div className="relative order-1 min-w-0 lg:order-2">
+
+              <div className="relative overflow-hidden rounded-2xl">
+
+                <img
+                  src={images[safeSelectedImage]}
+                  alt={property.title}
+                  onError={(e) => {
+                    e.currentTarget.src =
+                      fallbackImages[
+                        safeSelectedImage %
+                          fallbackImages.length
+                      ];
+                  }}
+                  className="h-[360px] w-full object-cover sm:h-[460px] lg:h-[570px]"
+                />
+
+                {/* Image overlay */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/10" />
+
+                {/* Featured */}
+                {property.featured && (
+                  <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-slate-950/75 px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] text-white shadow-lg backdrop-blur-md">
+                    <Star
+                      size={14}
+                      fill="currentColor"
+                      className="text-brass-400"
+                    />
+                    Featured
+                  </div>
+                )}
+
+                {/* Verified */}
+                {property.verified && (
+                  <div className="absolute right-5 top-5 flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-600/90 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur-md">
+                    <ShieldCheck size={16} />
+                    Verified
+                  </div>
+                )}
+
+                {/* Property type */}
+                <div className="absolute bottom-5 left-5 rounded-full border border-white/20 bg-slate-950/75 px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] text-white backdrop-blur-md">
+                  {property.propertyType}
+                </div>
+
+                {/* Image counter */}
+                {images.length > 1 && (
+                  <div className="absolute bottom-5 right-5 rounded-full border border-white/20 bg-slate-950/70 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md">
+                    {safeSelectedImage + 1} / {images.length}
+                  </div>
+                )}
+
+                {/* Previous */}
+                {images.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={previousImage}
+                    aria-label="Previous image"
+                    className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/90 text-slate-800 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white"
+                  >
+                    <ChevronLeft size={22} />
+                  </button>
+                )}
+
+                {/* Next */}
+                {images.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={nextImage}
+                    aria-label="Next image"
+                    className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/90 text-slate-800 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white"
+                  >
+                    <ChevronRight size={22} />
+                  </button>
+                )}
 
               </div>
 
-             <div className="mt-8 grid grid-cols-2 gap-4">
-
-  <a
-    href={`mailto:${property.owner.email}`}
-    className="
-      flex items-center justify-center gap-2
-      rounded-2xl
-      bg-gradient-to-r
-      from-blue-600
-      to-indigo-600
-      px-6 py-3
-      font-semibold
-      text-white
-      shadow-lg
-      transition-all
-      duration-300
-      hover:scale-105
-      hover:shadow-xl
-    "
-  >
-    📧
-    Email Owner
-  </a>
-
-  <a
-    href={`tel:${property.owner.phone}`}
-    className="
-      flex items-center justify-center gap-2
-      rounded-2xl
-      bg-gradient-to-r
-      from-green-600
-      to-emerald-600
-      px-6 py-3
-      font-semibold
-      text-white
-      shadow-lg
-      transition-all
-      duration-300
-      hover:scale-105
-      hover:shadow-xl
-    "
-  >
-    📞
-    Call Owner
-  </a>
-
-</div>
-            </>
-
-          ) : (
-
-            <p className="text-gray-500">
-
-              Owner information not available.
-
-            </p>
-
-          )}
-
-        </div>
-
-        {/* Quick Actions */}
-
-        <div className="rounded-3xl border bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-3xl font-bold">
-
-            Quick Actions
-
-          </h2>
-
-          <div className="grid gap-4">
-
-      <button
-  onClick={() => setShowVisitModal(true)}
-  className="rounded-xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
->
-  📅 Schedule Visit
-</button>
-
-            <button
-  onClick={() =>
-    property.owner &&
-    window.open(`tel:${property.owner.phone}`)
-  }
-  className="rounded-xl bg-green-600 py-4 text-lg font-semibold text-white transition hover:bg-green-700"
->
-  💬 Contact Builder
-</button>
-
-         <button
-  onClick={() => navigate("/compare-localities")}
-  className="rounded-xl bg-orange-500 py-4 text-lg font-semibold text-white transition hover:bg-orange-600"
->
-  ⚖ Compare Property
-</button>
-
-          <button
-  onClick={() => {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Property link copied to clipboard.");
-  }}
-  className="rounded-xl border py-4 text-lg font-semibold transition hover:bg-gray-100"
->
-  📤 Share Property
-</button>
+            </div>
 
           </div>
 
-        </div>
+        </section>
 
-      </div>
+        {/* =====================================================
+            HERO / PROPERTY HEADER
+        ====================================================== */}
 
-      {/* ================= AI RECOMMENDATION ================= */}
+        <section className="mt-8">
 
-      <div className="mt-12 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white shadow-xl">
+          <div className="pi-card-static relative overflow-hidden p-6 md:p-8">
 
-        <div className="flex items-center gap-3">
+            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-100/50 blur-3xl" />
 
-          <Star
-            fill="currentColor"
-            className="text-yellow-300"
-          />
+            <div className="pointer-events-none absolute -bottom-28 left-1/3 h-52 w-52 rounded-full bg-brass-100/40 blur-3xl" />
 
-          <h2 className="text-3xl font-bold">
+            <div className="relative flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
 
-            AI Investment Insight
+              <div className="min-w-0">
 
-          </h2>
+                {/* Builder */}
+                <div className="flex flex-wrap items-center gap-2">
 
-        </div>
-
-        <p className="mt-6 text-lg leading-8 text-blue-100">
-
-          Based on the property's AI score,
-          investment score, rental yield,
-          appreciation rate and location,
-          this property is considered a
-          <span className="font-bold text-white">
-
-            {" "}strong investment opportunity{" "}
-
-          </span>
-
-          for long-term appreciation and
-          rental income.
-
-        </p>
-
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-
-          <div className="rounded-2xl bg-white/10 p-5">
-
-            <h3 className="font-semibold">
-
-              AI Score
-
-            </h3>
-
-            <p className="mt-2 text-4xl font-bold">
-
-              {property.aiScore}/10
-
-            </p>
-
-          </div>
-
-          <div className="rounded-2xl bg-white/10 p-5">
-
-            <h3 className="font-semibold">
-
-              Appreciation
-
-            </h3>
-
-            <p className="mt-2 text-4xl font-bold">
-
-              {property.appreciation}%
-
-            </p>
-
-          </div>
-
-          <div className="rounded-2xl bg-white/10 p-5">
-
-            <h3 className="font-semibold">
-
-              Rental Yield
-
-            </h3>
-
-            <p className="mt-2 text-4xl font-bold">
-
-              {property.rentalYield}%
-
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-            {/* ================= PRICE TREND ================= */}
-
-      <div className="mt-12 rounded-3xl border bg-white p-8 shadow-sm">
-
-        <h2 className="mb-6 text-3xl font-bold">
-
-          Price Trend
-
-        </h2>
-
-        <div className="grid grid-cols-5 gap-3">
-
-          {[2021, 2022, 2023, 2024, 2025].map(
-            (year, index) => {
-
-              const multiplier =
-                0.78 + index * 0.08;
-
-              const value = Math.round(
-                property.price * multiplier
-              );
-
-              return (
-
-                <div
-                  key={year}
-                  className="rounded-2xl bg-blue-50 p-5 text-center"
-                >
-
-                  <p className="text-gray-500">
-
-                    {year}
-
-                  </p>
-
-                  <div
-                    className="mx-auto mt-5 flex h-32 items-end justify-center"
-                  >
-
-                    <div
-                      style={{
-                        height: `${50 + index * 18}px`,
-                      }}
-                      className="w-10 rounded-t-xl bg-blue-600"
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-blue-50">
+                    <Building2
+                      size={18}
+                      className="text-blue-600"
                     />
-
                   </div>
 
-                  <p className="mt-4 font-bold text-blue-700">
+                  <span className="text-sm font-semibold text-blue-700">
+                    {property.builder}
+                  </span>
 
-                    ₹ {(value / 100000).toFixed(1)}L
-
-                  </p>
+                  {property.verified && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700">
+                      <CheckCircle2 size={12} />
+                      Verified
+                    </span>
+                  )}
 
                 </div>
 
-              );
+                {/* Title */}
+                <h1 className="mt-4 max-w-4xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+                  {property.title}
+                </h1>
 
-            }
-          )}
+                {/* Location */}
+                <div className="mt-5 flex items-start gap-2.5 text-sm text-slate-500">
 
-        </div>
+                  <MapPin
+                    size={19}
+                    className="mt-0.5 shrink-0 text-brass-500"
+                  />
 
-      </div>
+                  <span>
+                    {property.address},{" "}
+                    {property.locality},{" "}
+                    {property.city}
+                  </span>
 
-      {/* ================= SIMILAR PROPERTIES ================= */}
+                </div>
 
-      <div className="mt-12">
+                {/* Price */}
+                <div className="mt-6 flex flex-wrap items-baseline gap-2">
 
-        <div className="mb-8 flex items-center justify-between">
+                  <IndianRupee
+                    size={29}
+                    className="text-brass-600"
+                  />
 
-          <h2 className="text-3xl font-bold">
+                  <span className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                    {property.price.toLocaleString(
+                      "en-IN"
+                    )}
+                  </span>
 
-            Similar Properties
+                  <span className="text-sm font-medium text-slate-400">
+                    Property Price
+                  </span>
 
-          </h2>
+                </div>
 
-          <button
-            onClick={() =>
-              navigate("/properties")
-            }
-            className="rounded-xl border px-5 py-2 hover:bg-gray-100"
-          >
+              </div>
 
-            View All
+              {/* Actions */}
+              <div className="flex items-center gap-3">
 
-          </button>
+                <div className="rounded-2xl border border-slate-200 bg-white p-1 shadow-sm">
+                  <FavoriteButton
+                    propertyId={property._id}
+                  />
+                </div>
 
-        </div>
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="pi-btn pi-btn-secondary"
+                >
+                  <Share2 size={17} />
+                  <span className="hidden sm:inline">
+                    Share
+                  </span>
+                </button>
 
-        <div className="rounded-3xl border bg-gray-50 p-10 text-center">
+              </div>
 
-          <div className="text-6xl">
-
-            🏡
+            </div>
 
           </div>
 
-          <h3 className="mt-6 text-2xl font-bold">
+        </section>
 
-            AI Similar Properties
+        {/* =====================================================
+            AI ANALYTICS
+        ====================================================== */}
 
-          </h3>
+        <section className="mt-8">
 
-          <p className="mt-4 text-gray-500">
+          <div className="mb-5">
+            <div className="pi-section-label">
+              Property Intelligence
+            </div>
 
-            Similar property recommendations
-            will appear here based on
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink">
+              AI Analytics
+            </h2>
 
-            <strong>
+            <p className="mt-1 text-sm text-slate-500">
+              Key investment indicators generated from property data.
+            </p>
+          </div>
 
-              {" "}
-              location,
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-            </strong>
+            {/* AI Score */}
+            <div className="pi-card-static p-5">
 
-            <strong>
+              <div className="flex items-start justify-between">
 
-              {" "}
-              AI score,
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    AI Score
+                  </p>
 
-            </strong>
+                  <div className="mt-3 flex items-center gap-2">
+                    <Star
+                      size={21}
+                      fill="currentColor"
+                      className="text-brass-500"
+                    />
 
-            <strong>
+                    <span className="font-display text-3xl font-bold text-ink">
+                      {property.aiScore}
+                      <span className="text-base text-slate-400">
+                        /10
+                      </span>
+                    </span>
+                  </div>
+                </div>
 
-              {" "}
-              budget,
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  <Sparkles size={18} />
+                </div>
 
-            </strong>
+              </div>
 
-            <strong>
+            </div>
 
-              {" "}
-              property type
+            {/* Rental Yield */}
+            <div className="pi-card-static p-5">
 
-            </strong>
+              <div className="flex items-start justify-between">
 
-            and
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    Rental Yield
+                  </p>
 
-            <strong>
+                  <p className="mt-3 font-display text-3xl font-bold text-emerald-700">
+                    {property.rentalYield}%
+                  </p>
+                </div>
 
-              {" "}
-              investment potential.
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                  <TrendingUp size={18} />
+                </div>
 
-            </strong>
+              </div>
 
-          </p>
+            </div>
 
-          <button
-            onClick={() =>
-              navigate("/recommendation")
-            }
-            className="mt-8 rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
-          >
+            {/* Appreciation */}
+            <div className="pi-card-static p-5">
 
-            Explore AI Recommendations
+              <div className="flex items-start justify-between">
 
-          </button>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    Appreciation
+                  </p>
 
-        </div>
+                  <p className="mt-3 font-display text-3xl font-bold text-violet-700">
+                    {property.appreciation}%
+                  </p>
+                </div>
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+                  <TrendingUp size={18} />
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Investment Score */}
+            <div className="pi-card-static p-5">
+
+              <div className="flex items-start justify-between">
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    Investment Score
+                  </p>
+
+                  <p className="mt-3 font-display text-3xl font-bold text-orange-700">
+                    {property.investmentScore}
+                    <span className="text-base text-slate-400">
+                      /5
+                    </span>
+                  </p>
+                </div>
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                  <TrendingUp size={18} />
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            PROPERTY FEATURES
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+            {/* Bedrooms */}
+            <div className="pi-card-static p-6">
+
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                  <BedDouble size={23} />
+                </div>
+
+                <div>
+                  <p className="font-display text-2xl font-bold text-ink">
+                    {property.bedrooms}
+                  </p>
+
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
+                    Bedrooms
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Bathrooms */}
+            <div className="pi-card-static p-6">
+
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                  <Bath size={23} />
+                </div>
+
+                <div>
+                  <p className="font-display text-2xl font-bold text-ink">
+                    {property.bathrooms}
+                  </p>
+
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
+                    Bathrooms
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Area */}
+            <div className="pi-card-static p-6">
+
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brass-50 text-brass-600">
+                  <Ruler size={23} />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="truncate font-display text-2xl font-bold text-ink">
+                    {property.area}
+                  </p>
+
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
+                    Sq.ft
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Property Type */}
+            <div className="pi-card-static p-6">
+
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
+                  <Building2 size={23} />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="truncate font-display text-lg font-bold text-ink">
+                    {property.propertyType}
+                  </p>
+
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
+                    Property Type
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            DESCRIPTION
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="pi-card-static p-6 md:p-8">
+
+            <div className="pi-section-label">
+              Property Overview
+            </div>
+
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">
+              About this Property
+            </h2>
+
+            <p className="mt-5 max-w-5xl text-sm leading-7 text-slate-600 md:text-base md:leading-8">
+              {property.description}
+            </p>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            AMENITIES
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="pi-card-static p-6 md:p-8">
+
+            <div className="pi-section-label">
+              Property Features
+            </div>
+
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">
+              Amenities
+            </h2>
+
+            {property.amenities?.length ? (
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
+                {property.amenities.map(
+                  (amenity: string) => (
+                    <div
+                      key={amenity}
+                      className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3.5"
+                    >
+                      <CheckCircle2
+                        size={18}
+                        className="shrink-0 text-emerald-500"
+                      />
+
+                      <span className="text-sm font-medium text-slate-700">
+                        {amenity}
+                      </span>
+                    </div>
+                  )
+                )}
+
+              </div>
+            ) : (
+              <p className="mt-5 text-sm text-slate-500">
+                No amenities listed for this property.
+              </p>
+            )}
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            NEARBY
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="pi-card-static p-6 md:p-8">
+
+            <div className="pi-section-label">
+              Location Intelligence
+            </div>
+
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">
+              Nearby Places
+            </h2>
+
+            {property.nearby?.length ? (
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
+                {property.nearby.map(
+                  (place: string) => (
+                    <div
+                      key={place}
+                      className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <Navigation size={17} />
+                      </div>
+
+                      <span className="text-sm font-medium text-slate-700">
+                        {place}
+                      </span>
+                    </div>
+                  )
+                )}
+
+              </div>
+            ) : (
+              <p className="mt-5 text-sm text-slate-500">
+                Nearby information is not available.
+              </p>
+            )}
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            OWNER + QUICK ACTIONS
+        ====================================================== */}
+
+        <section className="mt-8 grid gap-6 lg:grid-cols-2">
+
+          {/* =================================================
+              OWNER
+          ================================================== */}
+
+          <div className="pi-card-static p-6 md:p-8">
+
+            <div className="pi-section-label">
+              Contact
+            </div>
+
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink">
+              Property Owner
+            </h2>
+
+            {property.owner ? (
+              <>
+                <div className="mt-6 space-y-4">
+
+                  <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                      <Building2 size={18} />
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                        Name
+                      </p>
+
+                      <p className="mt-1 truncate text-sm font-semibold text-ink">
+                        {property.owner.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                      <Mail size={18} />
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                        Email
+                      </p>
+
+                      <p className="mt-1 truncate text-sm font-semibold text-ink">
+                        {property.owner.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                      <Phone size={18} />
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                        Phone
+                      </p>
+
+                      <p className="mt-1 truncate text-sm font-semibold text-ink">
+                        {property.owner.phone}
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+
+                  <a
+                    href={`mailto:${property.owner.email}`}
+                    className="pi-btn pi-btn-primary w-full"
+                  >
+                    <Mail size={17} />
+                    Email Owner
+                  </a>
+
+                  <a
+                    href={`tel:${property.owner.phone}`}
+                    className="pi-btn w-full border border-emerald-200 bg-emerald-50 text-emerald-700 transition hover:bg-emerald-100"
+                  >
+                    <Phone size={17} />
+                    Call Owner
+                  </a>
+
+                </div>
+              </>
+            ) : (
+              <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+                <p className="text-sm text-slate-500">
+                  Owner information not available.
+                </p>
+              </div>
+            )}
+
+          </div>
+
+          {/* =================================================
+              QUICK ACTIONS
+          ================================================== */}
+
+          <div className="pi-card-dark relative overflow-hidden p-6 md:p-8">
+
+            <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
+
+            <div className="pointer-events-none absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-brass-400/10 blur-3xl" />
+
+            <div className="relative">
+
+              <div className="pi-section-label text-brass-300">
+                Next Steps
+              </div>
+
+              <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-white">
+                Quick Actions
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                Take action on this property or continue your investment research.
+              </p>
+
+              <div className="mt-6 grid gap-3">
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowVisitModal(true)
+                  }
+                  className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-500"
+                >
+                  <CalendarDays size={18} />
+                  Schedule Visit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    property.owner &&
+                    window.open(
+                      `tel:${property.owner.phone}`
+                    )
+                  }
+                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                >
+                  <Phone size={18} />
+                  Contact Builder
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(
+                      "/compare-localities"
+                    )
+                  }
+                  className="flex items-center justify-center gap-2 rounded-xl bg-brass-500 px-5 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-brass-400"
+                >
+                  <Scale size={18} />
+                  Compare Property
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  <Share2 size={18} />
+                  Share Property
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            AI RECOMMENDATION
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="pi-card-dark relative overflow-hidden p-6 md:p-8 lg:p-10">
+
+            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
+
+            <div className="pointer-events-none absolute -bottom-24 left-1/4 h-64 w-64 rounded-full bg-brass-400/10 blur-3xl" />
+
+            <div className="relative">
+
+              <div className="flex flex-wrap items-center gap-3">
+
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brass-400/10 text-brass-300">
+                  <Sparkles size={21} />
+                </div>
+
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-[0.14em] text-brass-300">
+                    AI Intelligence
+                  </div>
+
+                  <h2 className="mt-1 font-display text-2xl font-bold text-white md:text-3xl">
+                    AI Investment Insight
+                  </h2>
+                </div>
+
+              </div>
+
+              <p className="mt-6 max-w-4xl text-sm leading-7 text-slate-300 md:text-base md:leading-8">
+                Based on the property's AI score,
+                investment score, rental yield,
+                appreciation rate and location,
+                this property is considered a{" "}
+                <span className="font-semibold text-white">
+                  strong investment opportunity
+                </span>{" "}
+                for long-term appreciation and
+                rental income.
+              </p>
+
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    AI Score
+                  </p>
+
+                  <p className="mt-2 font-display text-3xl font-bold text-white">
+                    {property.aiScore}/10
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    Appreciation
+                  </p>
+
+                  <p className="mt-2 font-display text-3xl font-bold text-white">
+                    {property.appreciation}%
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    Rental Yield
+                  </p>
+
+                  <p className="mt-2 font-display text-3xl font-bold text-white">
+                    {property.rentalYield}%
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            PRICE TREND
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="pi-card-static p-6 md:p-8">
+
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+
+              <div>
+                <div className="pi-section-label">
+                  Market Intelligence
+                </div>
+
+                <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">
+                  Price Trend
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Historical price trend based on the property's current value.
+                </p>
+              </div>
+
+              <div className="hidden items-center gap-2 text-xs font-semibold text-slate-400 sm:flex">
+                <TrendingUp size={15} />
+                Historical View
+              </div>
+
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
+
+              {[2021, 2022, 2023, 2024, 2025].map(
+                (year, index) => {
+
+                  const multiplier =
+                    0.78 + index * 0.08;
+
+                  const value =
+                    Math.round(
+                      property.price *
+                        multiplier
+                    );
+
+                  return (
+                    <div
+                      key={year}
+                      className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 text-center"
+                    >
+
+                      <p className="text-xs font-semibold text-slate-400">
+                        {year}
+                      </p>
+
+                      <div className="mx-auto mt-4 flex h-32 items-end justify-center">
+
+                        <div
+                          style={{
+                            height: `${
+                              50 +
+                              index * 18
+                            }px`,
+                          }}
+                          className="w-8 rounded-t-lg bg-gradient-to-t from-blue-700 to-blue-400 transition-all duration-500"
+                        />
+
+                      </div>
+
+                      <p className="mt-4 font-display text-sm font-bold text-blue-700">
+                        ₹{" "}
+                        {(
+                          value / 100000
+                        ).toFixed(1)}
+                        L
+                      </p>
+
+                    </div>
+                  );
+                }
+              )}
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            SIMILAR PROPERTIES
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+
+            <div>
+              <div className="pi-section-label">
+                Recommendations
+              </div>
+
+              <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">
+                Similar Properties
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Explore AI-powered property recommendations.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/properties")
+              }
+              className="pi-btn pi-btn-secondary"
+            >
+              View All
+              <ExternalLink size={15} />
+            </button>
+
+          </div>
+
+          <div className="pi-card-static overflow-hidden p-8 text-center md:p-12">
+
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-3xl">
+              🏡
+            </div>
+
+            <h3 className="mt-6 font-display text-2xl font-bold text-ink">
+              AI Similar Properties
+            </h3>
+
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">
+              Similar property recommendations
+              will appear here based on{" "}
+              <strong className="text-slate-700">
+                location
+              </strong>
+              ,{" "}
+              <strong className="text-slate-700">
+                AI score
+              </strong>
+              ,{" "}
+              <strong className="text-slate-700">
+                budget
+              </strong>
+              ,{" "}
+              <strong className="text-slate-700">
+                property type
+              </strong>{" "}
+              and{" "}
+              <strong className="text-slate-700">
+                investment potential
+              </strong>
+              .
+            </p>
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate(
+                  "/recommendation"
+                )
+              }
+              className="pi-btn pi-btn-primary mt-7"
+            >
+              <Sparkles size={17} />
+              Explore AI Recommendations
+            </button>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            BOTTOM CTA
+        ====================================================== */}
+
+        <section className="mt-8">
+
+          <div className="pi-card-dark relative overflow-hidden p-8 text-center md:p-12">
+
+            <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
+
+            <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-brass-400/10 blur-3xl" />
+
+            <div className="relative">
+
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-brass-400/20 bg-brass-400/10 text-brass-300">
+                <Sparkles size={24} />
+              </div>
+
+              <h2 className="mt-6 font-display text-2xl font-bold tracking-tight text-white md:text-4xl">
+                Need AI Advice Before Buying?
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">
+                Ask our AI Advisor to compare,
+                analyse and recommend the best
+                investment property for your
+                budget.
+              </p>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/ai-advisor")
+                }
+                className="pi-btn pi-btn-brass mt-7"
+              >
+                <Sparkles size={17} />
+                Open AI Advisor
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+            SCHEDULE VISIT MODAL
+        ====================================================== */}
+
+        <ScheduleVisitModal
+          open={showVisitModal}
+          onClose={() =>
+            setShowVisitModal(false)
+          }
+        />
 
       </div>
-
-      {/* ================= BOTTOM CTA ================= */}
-
-      <div className="mt-14 rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-700 p-10 text-center text-white shadow-xl">
-
-        <h2 className="text-4xl font-bold">
-
-          Need AI Advice Before Buying?
-
-        </h2>
-
-        <p className="mt-4 text-lg text-blue-100">
-
-          Ask our AI Advisor to compare,
-          analyse and recommend the best
-          investment property for your
-          budget.
-
-        </p>
-
-        <button
-          onClick={() =>
-            navigate("/ai-advisor")
-          }
-          className="mt-8 rounded-xl bg-white px-8 py-4 font-bold text-blue-700 transition hover:scale-105"
-        >
-
-          🤖 Open AI Advisor
-
-        </button>
-
-        </div>
-
-      <ScheduleVisitModal
-        open={showVisitModal}
-        onClose={() => setShowVisitModal(false)}
-      />
-
     </div>
-
   );
-
 }

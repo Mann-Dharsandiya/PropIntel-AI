@@ -13,26 +13,49 @@ import { AuthProvider } from "@/context/AuthContext";
 import App from "./App";
 import "./index.css";
 
-const queryClient = new QueryClient();
+/* =========================================================
+   REACT QUERY
+   ========================================================= */
 
-ReactDOM.createRoot(
-  document.getElementById("root")!
-).render(
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+/* =========================================================
+   APPLICATION BOOTSTRAP
+   ========================================================= */
+
+const rootElement =
+  document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error(
+    "Root element #root was not found."
+  );
+}
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider
+      client={queryClient}
+    >
       <BrowserRouter>
-
         <AuthProvider>
-
           <Toaster
             position="top-right"
             reverseOrder={false}
+            toastOptions={{
+              duration: 3500,
+            }}
           />
 
           <App />
-
         </AuthProvider>
-
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>

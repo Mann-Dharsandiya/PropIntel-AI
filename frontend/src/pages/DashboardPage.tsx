@@ -27,8 +27,8 @@ export default function DashboardPage() {
   // =========================================================
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50">
-        <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="pi-page min-h-screen">
+        <div className="pi-container py-8 md:py-10">
           <DashboardSkeleton />
         </div>
       </div>
@@ -40,30 +40,34 @@ export default function DashboardPage() {
   // =========================================================
   if (isError || !data) {
     return (
-      <div className="min-h-screen bg-slate-50">
-        <div className="mx-auto flex min-h-[70vh] max-w-7xl items-center justify-center px-6">
-          <div className="w-full max-w-md rounded-3xl border border-red-100 bg-white p-8 text-center shadow-sm">
+      <div className="pi-page min-h-screen">
+        <div className="pi-container flex min-h-[70vh] items-center justify-center">
+          <div className="pi-card w-full max-w-md p-8 text-center md:p-10">
 
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl">
+            {/* Error Icon */}
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-red-100 bg-red-50 text-2xl">
               ⚠️
             </div>
 
-            <h2 className="mt-5 text-2xl font-bold text-gray-900">
-              Failed to load Dashboard
+            {/* Title */}
+            <h2 className="mt-6 font-display text-2xl font-bold tracking-tight text-ink">
+              Failed to Load Dashboard
             </h2>
 
-            <p className="mt-3 text-gray-600">
-              Something went wrong while loading your dashboard.
+            {/* Description */}
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              Something went wrong while loading your
+              dashboard. Please try again.
             </p>
 
+            {/* Retry */}
             <button
               type="button"
               onClick={() => refetch()}
-              className="mt-6 rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
+              className="pi-btn pi-btn-primary mt-7 w-full"
             >
               Try Again
             </button>
-
           </div>
         </div>
       </div>
@@ -74,84 +78,152 @@ export default function DashboardPage() {
   // Dashboard
   // =========================================================
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="pi-page min-h-screen">
 
-      <div className="mx-auto max-w-7xl px-6 py-8 md:py-10">
+      {/* =====================================================
+          Dashboard Container
+      ===================================================== */}
+      <div className="pi-container py-8 md:py-10 lg:py-12">
 
-        {/* ================================================= */}
-        {/* Header */}
-        {/* ================================================= */}
+        {/* ===================================================
+            Dashboard Header
+        =================================================== */}
+        <section>
+          <DashboardHeader />
+        </section>
 
-        <DashboardHeader />
-
-        {/* ================================================= */}
-        {/* Statistics */}
-        {/* ================================================= */}
-
-        <section className="mt-8">
+        {/* ===================================================
+            Dashboard Statistics
+        =================================================== */}
+        <section className="mt-8 md:mt-10">
           <DashboardStats stats={data.stats} />
         </section>
 
-        {/* ================================================= */}
-        {/* Quick Actions */}
-        {/* ================================================= */}
+        {/* ===================================================
+            Quick Actions
+        =================================================== */}
+        <section className="mt-8 md:mt-10">
+          <div className="pi-card-static overflow-hidden">
+            <div className="border-b border-slate-200/70 px-5 py-5 md:px-6">
+              <div className="pi-section-label">
+                Quick Access
+              </div>
 
-        <section className="mt-8">
-          <QuickActions />
+              <h2 className="mt-1 font-display text-xl font-bold tracking-tight text-ink md:text-2xl">
+                Quick Actions
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Access your most-used real estate tools quickly.
+              </p>
+            </div>
+
+            <div className="p-5 md:p-6">
+              <QuickActions />
+            </div>
+          </div>
         </section>
 
-        {/* ================================================= */}
-        {/* Investment Portfolio */}
-        {/* ================================================= */}
+        {/* ===================================================
+            Investment Intelligence
+        =================================================== */}
+        <section className="mt-8 md:mt-10">
 
-        <section className="mt-10">
+          <div className="pi-card-dark relative overflow-hidden p-6 md:p-8">
+
+            {/* Decorative background */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-brass-500/10 blur-3xl" />
+
+            <div className="pointer-events-none absolute -bottom-24 -left-16 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
+
+            <div className="relative">
+
+              {/* Section Label */}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center rounded-full border border-brass-400/30 bg-brass-400/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-brass-300">
+                  Investment Intelligence
+                </span>
+
+                <span className="h-px w-10 bg-brass-400/40" />
+              </div>
+
+              {/* Heading */}
+              <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-white md:text-3xl">
+                Build a smarter property portfolio.
+              </h2>
+
+              {/* Description */}
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
+                Track your real estate investments, portfolio
+                performance and AI-powered insights from one place.
+              </p>
+
+              {/* Portfolio Button */}
+              <div className="mt-6">
+                <PortfolioButton />
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+
+        {/* ===================================================
+            Activity + Favorites
+        =================================================== */}
+        <section className="mt-8 md:mt-10">
 
           <div className="mb-5">
-            <h2 className="text-2xl font-bold text-slate-900">
-              Investment Intelligence
+            <div className="pi-section-label">
+              Your Activity
+            </div>
+
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink">
+              Recent Activity
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
-              Track your real estate investments, portfolio
-              performance and AI-powered insights.
+              Keep track of your latest property activity and saved
+              properties.
             </p>
           </div>
 
-          <PortfolioButton />
-
-        </section>
-
-        {/* ================================================= */}
-        {/* Activity & Favorites */}
-        {/* ================================================= */}
-
-        <section className="mt-10">
-
           <div className="grid gap-6 lg:grid-cols-2">
 
-            <RecentActivity
-              activities={data.activities}
-            />
+            {/* Recent Activity */}
+            <div className="pi-card-static overflow-hidden">
+              <RecentActivity
+                activities={data.activities}
+              />
+            </div>
 
-            <FavoritePreview
-              favorites={data.favorites}
-            />
+            {/* Favorites */}
+            <div className="pi-card-static overflow-hidden">
+              <FavoritePreview
+                favorites={data.favorites}
+              />
+            </div>
 
+          </div>
+        </section>
+
+        {/* ===================================================
+            Recently Viewed
+        =================================================== */}
+        <section className="mt-8 md:mt-10">
+
+          <div className="pi-card-static overflow-hidden">
+            <RecentlyViewedPreview
+              recentlyViewed={data.recentlyViewed}
+            />
           </div>
 
         </section>
 
-        {/* ================================================= */}
-        {/* Recently Viewed */}
-        {/* ================================================= */}
-
-        <section className="mt-10">
-
-          <RecentlyViewedPreview
-            recentlyViewed={data.recentlyViewed}
-          />
-
-        </section>
+        {/* ===================================================
+            Bottom Spacing
+        =================================================== */}
+        <div className="h-6 md:h-8" />
 
       </div>
     </div>

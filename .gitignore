@@ -4,27 +4,33 @@ __pycache__/
 .venv/
 venv/
 
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
 # Build output
 dist/
 build/
-
-# Env files
-.env
-.env.local
 
 # Logs
 *.log
 npm-debug.log*
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# Editor
+# Editors
 .vscode/*
 !.vscode/extensions.json
 .idea/
 
 # Python
-*.pyc
-*.pkl
+*.py[cod]
+
+# Local databases and temporary files
+*.sqlite
+*.db
+coverage/
+.nyc_output/

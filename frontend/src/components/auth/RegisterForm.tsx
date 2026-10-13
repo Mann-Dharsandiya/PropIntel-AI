@@ -1,9 +1,16 @@
+ // frontend/src/components/auth/RegisterForm.tsx
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, UserPlus } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  UserPlus,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 import { useAuth } from "@/context/AuthContext";
@@ -13,43 +20,88 @@ const registerSchema = z
   .object({
     name: z
       .string()
-      .min(2, "Name must contain at least 2 characters"),
+      .trim()
+      .min(
+        2,
+        "Name must contain at least 2 characters"
+      ),
 
-    email: z.string().email("Enter a valid email"),
+    email: z
+      .string()
+      .trim()
+      .email("Enter a valid email"),
 
     phone: z
       .string()
-      .regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
+      .trim()
+      .regex(
+        /^\+?[0-9]{10,15}$/,
+        "Enter a valid phone number"
+      ),
 
-    role: z.enum(["buyer", "seller"]),
+    role: z.enum([
+      "buyer",
+      "seller",
+    ]),
 
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Must contain one uppercase letter")
-      .regex(/[a-z]/, "Must contain one lowercase letter")
-      .regex(/[0-9]/, "Must contain one number"),
+      .min(
+        8,
+        "Password must be at least 8 characters"
+      )
+      .regex(
+        /[A-Z]/,
+        "Must contain one uppercase letter"
+      )
+      .regex(
+        /[a-z]/,
+        "Must contain one lowercase letter"
+      )
+      .regex(
+        /[0-9]/,
+        "Must contain one number"
+      )
+      .regex(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "Must contain one special character"
+      ),
 
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
+  .refine(
+    (data) =>
+      data.password ===
+      data.confirmPassword,
+    {
+      path: [
+        "confirmPassword",
+      ],
+      message:
+        "Passwords do not match",
+    }
+  );
 
-type RegisterFormData = z.infer<typeof registerSchema>;
+type RegisterFormData =
+  z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
   const navigate = useNavigate();
 
-  const { register: registerUser } = useAuth();
+  const {
+    register: registerUser,
+  } = useAuth();
 
-  const [loading, setLoading] = useState(false);
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [showConfirmPassword, setShowConfirmPassword] =
+  const [loading, setLoading] =
     useState(false);
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [
+    showConfirmPassword,
+    setShowConfirmPassword,
+  ] = useState(false);
 
   const {
     register,
@@ -57,38 +109,58 @@ export default function RegisterForm() {
     watch,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver:
+      zodResolver(registerSchema),
 
     defaultValues: {
       role: "buyer",
     },
   });
 
-  const password = watch("password");
+  const password =
+    watch("password");
 
-  async function onSubmit(data: RegisterFormData) {
+  async function onSubmit(
+    data: RegisterFormData
+  ) {
     try {
       setLoading(true);
 
-      const response = await registerUser({
-  name: data.name,
-  email: data.email,
-  phone: data.phone,
-  password: data.password,
-  role: data.role,
-});
+      const cleanedPhone =
+        data.phone.replace(
+          /[\s-]/g,
+          ""
+        );
 
-toast.success(
-  response.message || "Verification email sent successfully."
-);
+      await registerUser({
+        name: data.name.trim(),
 
-navigate(
-  `/verify-email?email=${encodeURIComponent(data.email)}`
-);
+        email: data.email
+          .trim()
+          .toLowerCase(),
+
+        phone: cleanedPhone,
+
+        password: data.password,
+
+        role: data.role,
+      });
+
+      toast.success(
+        "Registration Successful 🎉"
+      );
+
+      navigate("/dashboard");
     } catch (err: any) {
+      console.error(
+        "Registration error:",
+        err
+      );
+
       toast.error(
         err?.response?.data?.message ||
-          err.message ||
+          err?.response?.data?.error ||
+          err?.message ||
           "Registration failed"
       );
     } finally {
@@ -99,7 +171,9 @@ navigate(
   return (
     <form
       className="space-y-5"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(
+        onSubmit
+      )}
     >
       {/* NAME */}
 
@@ -110,6 +184,8 @@ navigate(
 
         <input
           {...register("name")}
+          type="text"
+          autoComplete="name"
           className="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="John Doe"
         />
@@ -131,6 +207,7 @@ navigate(
         <input
           {...register("email")}
           type="email"
+          autoComplete="email"
           className="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="john@gmail.com"
         />
@@ -151,8 +228,10 @@ navigate(
 
         <input
           {...register("phone")}
+          type="tel"
+          autoComplete="tel"
           className="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="+91 9876543210"
+          placeholder="+919876543210"
         />
 
         {errors.phone && (
@@ -173,9 +252,13 @@ navigate(
           {...register("role")}
           className="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="buyer">Buyer</option>
+          <option value="buyer">
+            Buyer
+          </option>
 
-          <option value="seller">Seller</option>
+          <option value="seller">
+            Seller
+          </option>
         </select>
       </div>
 
@@ -189,16 +272,24 @@ navigate(
         <div className="relative">
           <input
             {...register("password")}
-            type={showPassword ? "text" : "password"}
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
+            autoComplete="new-password"
             className="w-full border rounded-xl p-3 pr-12 outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Create a strong password"
           />
 
           <button
             type="button"
             onClick={() =>
-              setShowPassword(!showPassword)
+              setShowPassword(
+                !showPassword
+              )
             }
-            className="absolute right-3 top-3"
+            className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
           >
             {showPassword ? (
               <EyeOff size={20} />
@@ -208,7 +299,11 @@ navigate(
           </button>
         </div>
 
-        <PasswordStrength password={password || ""} />
+        <PasswordStrength
+          password={
+            password || ""
+          }
+        />
 
         {errors.password && (
           <p className="text-red-500 text-sm mt-1">
@@ -226,23 +321,27 @@ navigate(
 
         <div className="relative">
           <input
-            {...register("confirmPassword")}
+            {...register(
+              "confirmPassword"
+            )}
             type={
               showConfirmPassword
                 ? "text"
                 : "password"
             }
+            autoComplete="new-password"
             className="w-full border rounded-xl p-3 pr-12 outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Confirm your password"
           />
 
           <button
             type="button"
-            className="absolute right-3 top-3"
             onClick={() =>
               setShowConfirmPassword(
                 !showConfirmPassword
               )
             }
+            className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
           >
             {showConfirmPassword ? (
               <EyeOff size={20} />
@@ -254,7 +353,11 @@ navigate(
 
         {errors.confirmPassword && (
           <p className="text-red-500 text-sm mt-1">
-            {errors.confirmPassword.message}
+            {
+              errors
+                .confirmPassword
+                .message
+            }
           </p>
         )}
       </div>
@@ -262,8 +365,9 @@ navigate(
       {/* BUTTON */}
 
       <button
+        type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 font-semibold flex justify-center items-center gap-2 transition"
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-xl py-3 font-semibold flex justify-center items-center gap-2 transition"
       >
         {loading ? (
           <>
@@ -281,11 +385,14 @@ navigate(
         )}
       </button>
 
+      {/* LOGIN */}
+
       <div className="text-center text-gray-600">
         Already have an account?
+
         <Link
           to="/login"
-          className="text-blue-600 font-semibold ml-2"
+          className="text-blue-600 font-semibold ml-2 hover:underline"
         >
           Login
         </Link>

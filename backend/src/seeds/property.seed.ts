@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import { PropertyModel } from "../models/Property.model";
@@ -104,6 +104,7 @@ const PROPERTY_NAMES = [
   "Golden Residency",
   "Palm Meadows",
 ];
+
 const PROPERTY_IMAGES = [
   "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
   "https://images.unsplash.com/photo-1600585154526-990dced4db0d",
@@ -117,6 +118,17 @@ const PROPERTY_IMAGES = [
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
   "https://images.unsplash.com/photo-1600607687644-c7171b42498f",
   "https://images.unsplash.com/photo-1600210492493-0946911123ea",
+];
+
+const BUILDERS = [
+  "Lodha Group",
+  "Godrej Properties",
+  "Prestige Group",
+  "Sobha Limited",
+  "Mahindra Lifespaces",
+  "Kolte Patil Developers",
+  "K Raheja Corp",
+  "Tata Realty",
 ];
 
 function random(min: number, max: number) {
@@ -150,6 +162,7 @@ async function getSeller() {
 
   return seller;
 }
+
 function generateProperty(
   sellerId: mongoose.Types.ObjectId,
   localityData: (typeof LOCALITIES)[number],
@@ -185,17 +198,33 @@ function generateProperty(
     area *
     localityData.pricePerSqFt;
 
+  const propertyName =
+    PROPERTY_NAMES[
+      random(
+        0,
+        PROPERTY_NAMES.length - 1
+      )
+    ];
+
+  const builder =
+    BUILDERS[
+      random(
+        0,
+        BUILDERS.length - 1
+      )
+    ];
+
+  const projectName =
+    `${propertyName} ${localityData.locality}`;
+
   return {
-    title: `${
-      PROPERTY_NAMES[
-        random(
-          0,
-          PROPERTY_NAMES.length - 1
-        )
-      ]
-    } ${index + 1}`,
+    title: `${propertyName} ${index + 1}`,
 
     description: `${bedrooms} BHK ${propertyType} in ${localityData.locality}, ${localityData.city}. Excellent investment opportunity with premium amenities.`,
+
+    builder,
+
+    projectName,
 
     price,
 
@@ -221,14 +250,14 @@ function generateProperty(
 
     country: "India",
 
-   images: [
-  PROPERTY_IMAGES[
-    random(
-      0,
-      PROPERTY_IMAGES.length - 1
-    )
-  ],
-],
+    images: [
+      PROPERTY_IMAGES[
+        random(
+          0,
+          PROPERTY_IMAGES.length - 1
+        )
+      ],
+    ],
 
     owner: sellerId,
 
@@ -261,7 +290,9 @@ async function seedProperties() {
       "🗑 Old properties removed"
     );
 
-    const properties = [];
+    const properties: ReturnType<
+      typeof generateProperty
+    >[] = [];
 
     let counter = 1;
 
@@ -284,7 +315,8 @@ async function seedProperties() {
     console.log(
       `🏗 Generated ${properties.length} properties`
     );
-        await PropertyModel.insertMany(
+
+    await PropertyModel.insertMany(
       properties
     );
 

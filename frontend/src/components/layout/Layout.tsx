@@ -1,34 +1,26 @@
- import { Outlet } from "react-router-dom";
+ // frontend/src/layouts/Layout.tsx
+
+import { Outlet } from "react-router-dom";
 
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-
 import FloatingAIButton from "@/components/ai/FloatingAIButton";
 
-/**
- * Shared application shell.
- *
- * Navbar + routed page + Footer are rendered
- * around every page through React Router <Outlet />.
- */
 export default function Layout() {
   return (
-    <div className="flex min-h-screen flex-col bg-paper">
-
-      {/* Main Navigation */}
+    <div className="flex min-h-screen flex-col bg-[#f7f8fa] text-[#101828]">
       <Navbar />
 
-      {/* Routed Page Content */}
-      <main className="flex-1">
+      <main
+        className="flex min-w-0 flex-1 flex-col"
+        role="main"
+      >
         <Outlet />
       </main>
 
-      {/* Footer */}
       <Footer />
 
-      {/* Floating AI Assistant */}
       <FloatingAIButton />
-
     </div>
   );
 }

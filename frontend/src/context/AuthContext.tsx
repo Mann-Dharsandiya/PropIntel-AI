@@ -9,7 +9,6 @@
 import {
   login as loginApi,
   register as registerApi,
-  AuthUser,
 } from "@/api/auth";
 
 import { apiClient } from "@/api/axios";
@@ -44,13 +43,7 @@ interface AuthContextType {
 
   login(data: LoginData): Promise<void>;
 
-  register(
-  data: RegisterData
-): Promise<{
-  success: boolean;
-  message: string;
-  user?: AuthUser;
-}>;
+  register(data: RegisterData): Promise<void>;
 
   logout(): void;
 
@@ -80,12 +73,18 @@ export function AuthProvider({
     refreshUser();
   }, []);
 
-  async function refreshUser() {
-    const storedToken = localStorage.getItem(
-      "propintel_token"
-    );
+  /**
+   * ---------------------------------------------------------
+   * Restore authenticated user
+   * ---------------------------------------------------------
+   */
+  async function refreshUser(): Promise<void> {
+    const storedToken =
+      localStorage.getItem("propintel_token");
 
     if (!storedToken) {
+      setUser(null);
+      setToken(null);
       setLoading(false);
       return;
     }
@@ -97,10 +96,42 @@ export function AuthProvider({
         },
       });
 
-      setUser(response.data.data);
-      setToken(storedToken);
-    } catch {
+      const responseData = response.data as any;
+
+      /*
+       * Backend currently returns:
+       *
+       * {
+       *   success: true,
+       *   data: user
+       * }
+       *
+       * These fallbacks also support alternative response formats.
+       */
+
+      const userData: User | null =
+        responseData?.data?.user ??
+        responseData?.data ??
+        responseData?.user ??
+        null;
+
+      if (userData) {
+        setUser(userData);
+        setToken(storedToken);
+      } else {
+        localStorage.removeItem("propintel_token");
+
+        setUser(null);
+        setToken(null);
+      }
+    } catch (error) {
+      console.error(
+        "Failed to restore authentication:",
+        error
+      );
+
       localStorage.removeItem("propintel_token");
+
       setUser(null);
       setToken(null);
     } finally {
@@ -108,32 +139,144 @@ export function AuthProvider({
     }
   }
 
-  async function login(data: LoginData) {
+  /**
+   * ---------------------------------------------------------
+   * Login
+   * ---------------------------------------------------------
+   */
+  async function login(
+    data: LoginData
+  ): Promise<void> {
     const response = await loginApi(data);
 
+    const responseData = response.data as any;
+
+    /*
+     * Backend currently returns:
+     *
+     * {
+     *   success: true,
+     *   message: "Login successful",
+     *   data: {
+     *     user: {...},
+     *     accessToken: "..."
+     *   }
+     * }
+     *
+     * Therefore the token is inside:
+     *
+     * response.data.data.accessToken
+     */
+
+    const accessToken =
+      responseData?.data?.accessToken ??
+      responseData?.data?.token ??
+      responseData?.accessToken ??
+      responseData?.token;
+
+    const userData =
+      responseData?.data?.user ??
+      responseData?.user;
+
+    if (!accessToken) {
+      console.error(
+        "Login response did not contain an access token:",
+        responseData
+      );
+
+      throw new Error(
+        "Login successful, but authentication token was not received."
+      );
+    }
+
+    /*
+     * Save token
+     */
     localStorage.setItem(
       "propintel_token",
-      response.data.accessToken
+      accessToken
     );
 
-    setToken(response.data.accessToken);
-    setUser(response.data.user);
+    setToken(accessToken);
+
+    /*
+     * Save user if returned by backend
+     */
+    if (userData) {
+      setUser(userData);
+    } else {
+      /*
+       * If user is not included in the login response,
+       * fetch the current user using the newly stored token.
+       */
+      await refreshUser();
+    }
   }
 
- async function register(data: RegisterData) {
-  const response = await registerApi(data);
+  /**
+   * ---------------------------------------------------------
+   * Register
+   * ---------------------------------------------------------
+   */
+  async function register(
+    data: RegisterData
+  ): Promise<void> {
+    const response = await registerApi(data);
 
-  // Do NOT log in immediately.
-  // User must verify email first.
+    /*
+     * registerApi returns response.data directly.
+     *
+     * Backend currently returns:
+     *
+     * {
+     *   success: true,
+     *   message: "...",
+     *   data: {
+     *     user: {...},
+     *     accessToken: "..."
+     *   }
+     * }
+     */
 
-  return {
-    success: response.success,
-    message: response.message,
-    user: response.data?.user,
-  };
-}
+    const responseData = response as any;
 
-  function logout() {
+    const accessToken =
+      responseData?.data?.accessToken ??
+      responseData?.data?.token ??
+      responseData?.accessToken ??
+      responseData?.token;
+
+    const userData =
+      responseData?.data?.user ??
+      responseData?.user;
+
+    /*
+     * Registration may succeed while email verification
+     * is still required.
+     *
+     * Therefore token is optional here.
+     */
+
+    if (accessToken) {
+      localStorage.setItem(
+        "propintel_token",
+        accessToken
+      );
+
+      setToken(accessToken);
+    }
+
+    if (userData) {
+      setUser(userData);
+    }
+  }
+
+  /**
+   * ---------------------------------------------------------
+   * Logout
+   * ---------------------------------------------------------
+   */
+  function logout(): void {
     localStorage.removeItem("propintel_token");
 
     setUser(null);
@@ -141,10 +284,13 @@ export function AuthProvider({
   }
 
   /**
-   * Update logged-in user without logging in again.
-   * Used after editing profile.
+   * ---------------------------------------------------------
+   * Update current user
+   * ---------------------------------------------------------
    */
-  function updateUser(updatedUser: User) {
+  function updateUser(
+    updatedUser: User
+  ): void {
     setUser(updatedUser);
   }
 
@@ -166,7 +312,7 @@ export function AuthProvider({
   );
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
 
   if (!context) {
@@ -177,3 +323,5 @@ export function useAuth() {
 
   return context;
 }
+
+export default AuthContext;

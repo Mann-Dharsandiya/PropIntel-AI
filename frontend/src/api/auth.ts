@@ -1,17 +1,10 @@
-import { apiClient } from "./axios";
+ import { apiClient } from "./axios";
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  role: "buyer" | "seller";
-}
+/**
+ * ============================================================
+ * PropIntel AI - Authentication API
+ * ============================================================
+ */
 
 export interface AuthUser {
   _id: string;
@@ -19,54 +12,147 @@ export interface AuthUser {
   email: string;
   phone: string;
   role: string;
-  profileImage: string;
-  isVerified: boolean;
+  profileImage?: string;
+  isVerified?: boolean;
 }
 
-export interface AuthResponse {
-  success: boolean;
-  message: string;
-  data: {
-    user: AuthUser;
-    accessToken: string;
+/**
+ * ------------------------------------------------------------
+ * Login
+ * ------------------------------------------------------------
+ */
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  success?: boolean;
+
+  message?: string;
+
+  accessToken?: string;
+
+  token?: string;
+
+  user?: AuthUser;
+
+  data?: {
+    accessToken?: string;
+
+    token?: string;
+
+    user?: AuthUser;
   };
 }
 
-// Login
-export const login = async (data: LoginRequest) => {
-  const response = await apiClient.post<AuthResponse>("/auth/login", data);
-  return response.data;
-};
+/**
+ * Login API
+ */
+export async function login(
+  data: LoginRequest
+) {
+  const response =
+    await apiClient.post<LoginResponse>(
+      "/auth/login",
+      data
+    );
 
-// Register
-export const register = async (data: RegisterRequest) => {
-  const response = await apiClient.post<AuthResponse>("/auth/register", data);
-  return response.data;
-};
-export interface VerifyEmailResponse {
-  success: boolean;
-  message: string;
+  return response;
 }
 
-export interface ResendVerificationRequest {
+/**
+ * ------------------------------------------------------------
+ * Register
+ * ------------------------------------------------------------
+ */
+
+export interface RegisterRequest {
+  name: string;
+
   email: string;
+
+  phone: string;
+
+  password: string;
+
+  role: "buyer" | "seller";
 }
 
-export const verifyEmail = async (token: string) => {
-  const response = await apiClient.get<VerifyEmailResponse>(
-    `/auth/verify-email/${token}`
-  );
+export interface RegisterResponse {
+  success: boolean;
+
+  message: string;
+
+  data?: {
+    user?: AuthUser;
+
+    accessToken?: string;
+
+    token?: string;
+  };
+
+  user?: AuthUser;
+
+  accessToken?: string;
+
+  token?: string;
+}
+
+/**
+ * Register API
+ *
+ * Returns response.data directly.
+ */
+export async function register(
+  data: RegisterRequest
+): Promise<RegisterResponse> {
+  const response =
+    await apiClient.post<RegisterResponse>(
+      "/auth/register",
+      data
+    );
 
   return response.data;
-};
+}
 
-export const resendVerification = async (
-  data: ResendVerificationRequest
-) => {
-  const response = await apiClient.post<VerifyEmailResponse>(
-    "/auth/resend-verification",
-    data
-  );
+/**
+ * ------------------------------------------------------------
+ * Get Current Authenticated User
+ * ------------------------------------------------------------
+ */
 
-  return response.data;
-};
+export async function getCurrentUser() {
+  const response =
+    await apiClient.get<{
+      success?: boolean;
+
+      message?: string;
+
+      data?: AuthUser;
+
+      user?: AuthUser;
+    }>("/auth/me");
+
+  return response;
+}
+
+/**
+ * ------------------------------------------------------------
+ * Logout
+ * ------------------------------------------------------------
+ */
+
+export async function logoutApi() {
+  try {
+    await apiClient.post(
+      "/auth/logout"
+    );
+  } catch {
+    /*
+     * Frontend logout should still work even
+     * if backend logout endpoint fails.
+     */
+  }
+}

@@ -166,7 +166,6 @@ const FinancialPage = lazy(
 );
 
 // =========================================================
-// PHASE 11
 // INVESTMENT PORTFOLIO
 // =========================================================
 
@@ -178,7 +177,6 @@ const PortfolioPage = lazy(
 );
 
 // =========================================================
-// PHASE 12
 // AI REPORTS
 // =========================================================
 
@@ -190,7 +188,6 @@ const ReportsPage = lazy(
 );
 
 // =========================================================
-// PHASE 12
 // MARKET INTELLIGENCE
 // =========================================================
 
@@ -223,7 +220,6 @@ export default function AppRoutes() {
         <Loading />
       }
     >
-
       <Routes>
 
         {/* ================================================= */}
@@ -341,9 +337,10 @@ export default function AppRoutes() {
           />
 
           {/* ================================================= */}
-          {/* AI MODULES */}
+          {/* AI PRICE PREDICTION */}
           {/* ================================================= */}
 
+          {/* Existing route - KEEP */}
           <Route
             path="/predict-price"
             element={
@@ -351,12 +348,37 @@ export default function AppRoutes() {
             }
           />
 
+          {/* Compatibility route - fixes /prediction */}
+          <Route
+            path="/prediction"
+            element={
+              <PricePredictionPage />
+            }
+          />
+
+          {/* ================================================= */}
+          {/* AI RECOMMENDATIONS */}
+          {/* ================================================= */}
+
+          {/* Existing route - KEEP */}
           <Route
             path="/recommendation"
             element={
               <RecommendationPage />
             }
           />
+
+          {/* Compatibility route - fixes /recommendations */}
+          <Route
+            path="/recommendations"
+            element={
+              <RecommendationPage />
+            }
+          />
+
+          {/* ================================================= */}
+          {/* LOCALITY INTELLIGENCE */}
+          {/* ================================================= */}
 
           <Route
             path="/locality"
@@ -395,7 +417,6 @@ export default function AppRoutes() {
           />
 
           {/* ================================================= */}
-          {/* PHASE 11 */}
           {/* INVESTMENT PORTFOLIO */}
           {/* ================================================= */}
 
@@ -409,7 +430,6 @@ export default function AppRoutes() {
           />
 
           {/* ================================================= */}
-          {/* PHASE 12 */}
           {/* AI REPORTS */}
           {/* ================================================= */}
 
@@ -421,7 +441,6 @@ export default function AppRoutes() {
           />
 
           {/* ================================================= */}
-          {/* PHASE 12 */}
           {/* MARKET INTELLIGENCE */}
           {/* ================================================= */}
 
@@ -460,7 +479,6 @@ export default function AppRoutes() {
         </Route>
 
       </Routes>
-
     </Suspense>
   );
 }

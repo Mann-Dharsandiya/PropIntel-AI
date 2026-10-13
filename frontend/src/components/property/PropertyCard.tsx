@@ -1,4 +1,12 @@
  import { Link } from "react-router-dom";
+import {
+  ArrowUpRight,
+  BedDouble,
+  Bath,
+  Ruler,
+  MapPin,
+} from "lucide-react";
+
 import { Property } from "@/api/property";
 import FavoriteButton from "./FavoriteButton";
 
@@ -31,89 +39,201 @@ function getFallbackImage(type: string) {
 export default function PropertyCard({
   property,
 }: PropertyCardProps) {
-  return (
-    <div className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+  const image =
+    property.images?.length
+      ? property.images[0]
+      : getFallbackImage(property.propertyType);
 
+  return (
+    <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
+
+      {/* ==================================================
+          IMAGE
+      ================================================== */}
       <div className="relative overflow-hidden">
 
-        <Link to={`/properties/${property._id}`}>
+        <Link
+          to={`/properties/${property._id}`}
+          className="block"
+        >
           <img
-            src={
-              property.images.length
-                ? property.images[0]
-                : getFallbackImage(property.propertyType)
-            }
+            src={image}
             alt={property.title}
             onError={(e) => {
               e.currentTarget.src = getFallbackImage(
                 property.propertyType
               );
             }}
-            className="h-60 w-full object-cover transition duration-500 group-hover:scale-110"
+            className="h-56 w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           />
         </Link>
 
-        <span className="absolute left-4 top-4 rounded-full bg-green-600 px-3 py-1 text-xs font-bold text-white">
-          Available
-        </span>
+        {/* Image overlay */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-slate-950/5" />
 
-        <span className="absolute right-16 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold">
-          {property.propertyType}
-        </span>
+        {/* Top badges */}
+        <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
 
-        <div className="absolute right-4 top-4 z-20">
-          <FavoriteButton propertyId={property._id} />
+          {/* Availability */}
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-950/75 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white shadow-sm backdrop-blur-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]" />
+            Available
+          </span>
+
+          {/* Property type */}
+          <span className="rounded-full border border-white/40 bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-800 shadow-sm backdrop-blur-md">
+            {property.propertyType}
+          </span>
+
+        </div>
+
+        {/* Favorite */}
+        <div className="absolute bottom-4 right-4 z-20">
+
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-white/90 shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-105">
+
+            <FavoriteButton
+              propertyId={property._id}
+            />
+
+          </div>
+
         </div>
 
       </div>
 
-      <Link to={`/properties/${property._id}`}>
+      {/* ==================================================
+          CONTENT
+      ================================================== */}
+      <div className="p-5">
 
-        <div className="p-5">
+        <Link
+          to={`/properties/${property._id}`}
+          className="block"
+        >
 
-          <h2 className="mb-2 line-clamp-1 text-xl font-bold">
+          {/* Title */}
+          <h2 className="line-clamp-1 font-display text-lg font-bold tracking-tight text-ink transition-colors duration-200 group-hover:text-brass-600">
             {property.title}
           </h2>
 
-          <p className="mb-3 text-sm text-gray-500">
-            📍 {property.city}, {property.state}
+          {/* Location */}
+          <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+
+            <MapPin
+              size={14}
+              strokeWidth={2}
+              className="shrink-0 text-brass-500"
+            />
+
+            <span className="line-clamp-1">
+              {property.city}, {property.state}
+            </span>
+
           </p>
 
-          <h3 className="mb-4 text-2xl font-bold text-blue-600">
-            ₹ {property.price.toLocaleString()}
-          </h3>
+          {/* Price */}
+          <div className="mt-4">
 
-          <p className="mb-5 line-clamp-2 text-sm text-gray-600">
+            <span className="font-display text-xl font-bold tracking-tight text-ink">
+              ₹{property.price.toLocaleString("en-IN")}
+            </span>
+
+          </div>
+
+          {/* Description */}
+          <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-5 text-slate-500">
             {property.description}
           </p>
 
-          <div className="mb-5 grid grid-cols-3 rounded-xl bg-gray-50 p-3 text-center">
+          {/* ==================================================
+              PROPERTY STATS
+          ================================================== */}
+          <div className="mt-5 grid grid-cols-3 divide-x divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80">
 
-            <div>
-              <div className="text-lg">🛏</div>
-              <p>{property.bedrooms}</p>
+            {/* Bedrooms */}
+            <div className="px-2 py-3 text-center transition-colors duration-200 group-hover:bg-white">
+
+              <BedDouble
+                size={17}
+                strokeWidth={1.8}
+                className="mx-auto text-slate-400"
+              />
+
+              <p className="mt-1 text-sm font-bold text-ink">
+                {property.bedrooms}
+              </p>
+
+              <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                Beds
+              </p>
+
             </div>
 
-            <div>
-              <div className="text-lg">🛁</div>
-              <p>{property.bathrooms}</p>
+            {/* Bathrooms */}
+            <div className="px-2 py-3 text-center transition-colors duration-200 group-hover:bg-white">
+
+              <Bath
+                size={17}
+                strokeWidth={1.8}
+                className="mx-auto text-slate-400"
+              />
+
+              <p className="mt-1 text-sm font-bold text-ink">
+                {property.bathrooms}
+              </p>
+
+              <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                Baths
+              </p>
+
             </div>
 
-            <div>
-              <div className="text-lg">📐</div>
-              <p>{property.area}</p>
+            {/* Area */}
+            <div className="px-2 py-3 text-center transition-colors duration-200 group-hover:bg-white">
+
+              <Ruler
+                size={17}
+                strokeWidth={1.8}
+                className="mx-auto text-slate-400"
+              />
+
+              <p className="mt-1 truncate text-sm font-bold text-ink">
+                {property.area}
+              </p>
+
+              <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                Sq.Ft
+              </p>
+
             </div>
 
           </div>
 
-          <button className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700">
-            View Details →
-          </button>
+          {/* ==================================================
+              VIEW DETAILS
+          ================================================== */}
+          <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
 
-        </div>
+            <span className="text-xs font-semibold text-slate-500 transition-colors group-hover:text-slate-700">
+              View property
+            </span>
 
-      </Link>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white transition-all duration-300 group-hover:translate-x-1 group-hover:bg-brass-500">
 
-    </div>
+              <ArrowUpRight
+                size={15}
+                strokeWidth={2}
+              />
+
+            </span>
+
+          </div>
+
+        </Link>
+
+      </div>
+
+    </article>
   );
 }

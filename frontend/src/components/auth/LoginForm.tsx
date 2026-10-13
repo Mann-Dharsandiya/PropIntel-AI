@@ -1,9 +1,16 @@
  import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  LogIn,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  zodResolver,
+} from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
 import { useAuth } from "@/context/AuthContext";
@@ -16,21 +23,27 @@ const loginSchema = z.object({
 
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters"),
+    .min(
+      8,
+      "Password must be at least 8 characters"
+    ),
 
   remember: z.boolean().optional(),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData =
+  z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const navigate = useNavigate();
 
   const { login } = useAuth();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
 
   const {
     register,
@@ -38,12 +51,15 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+
     defaultValues: {
       remember: true,
     },
   });
 
-  async function onSubmit(data: LoginFormData) {
+  async function onSubmit(
+    data: LoginFormData
+  ) {
     try {
       setLoading(true);
 
@@ -52,29 +68,31 @@ export default function LoginForm() {
         password: data.password,
       });
 
-      toast.success("Welcome Back 👋");
+      toast.success(
+        "Welcome Back 👋"
+      );
 
       navigate("/dashboard");
-    } 
-  catch (err: any) {
-  const message =
-    err?.response?.data?.message ||
-    err.message ||
-    "Login failed";
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed";
 
-  toast.error(message);
+      toast.error(message);
 
-  if (
-    message.toLowerCase().includes("verify")
-  ) {
-    navigate(
-      `/resend-verification?email=${encodeURIComponent(
-        data.email
-      )}`
-    );
-  }
-}
-     finally {
+      if (
+        message
+          .toLowerCase()
+          .includes("verify")
+      ) {
+        navigate(
+          `/resend-verification?email=${encodeURIComponent(
+            data.email
+          )}`
+        );
+      }
+    } finally {
       setLoading(false);
     }
   }
@@ -112,7 +130,11 @@ export default function LoginForm() {
 
         <div className="relative">
           <input
-            type={showPassword ? "text" : "password"}
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
             {...register("password")}
             placeholder="Enter your password"
             className="w-full rounded-xl border border-gray-300 p-3 pr-12 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -120,7 +142,11 @@ export default function LoginForm() {
 
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
+            onClick={() =>
+              setShowPassword(
+                !showPassword
+              )
+            }
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
           >
             {showPassword ? (
@@ -146,6 +172,7 @@ export default function LoginForm() {
             {...register("remember")}
             className="rounded"
           />
+
           Remember Me
         </label>
 
@@ -169,11 +196,13 @@ export default function LoginForm() {
               size={20}
               className="animate-spin"
             />
+
             Logging In...
           </>
         ) : (
           <>
             <LogIn size={20} />
+
             Login
           </>
         )}
